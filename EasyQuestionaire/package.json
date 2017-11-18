@@ -1,5 +1,5 @@
 {
-  "name": "EasyQuestionaire",
+  "name": "easy_questionaire",
   "private": true,
   "version": "0.0.0",
   "devDependencies": {
@@ -30,5 +30,8 @@
     "url-loader": "0.5.9",
     "webpack": "2.5.1",
     "webpack-hot-middleware": "2.18.2"
+  },
+  "dependencies": {
+    "office-ui-fabric-react": "^5.22.0"
   }
 }
