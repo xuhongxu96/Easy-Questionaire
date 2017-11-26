@@ -8,12 +8,13 @@ import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react/lib/MessageBar';
 import { IQuestionTypeModel } from '../../../models/IQuestionTypeModel';
 import { ErrorBar } from '../ErrorBar';
+import { HasFetchComponent } from '../../parts/HasFetchComponent';
 
 export interface IQuestionTypeFormError {
-    Name: string,
-    OwnerIP: string,
-    ShowFormTSX: string,
-    CreateFormTSX: string,
+    Name?: string,
+    OwnerIP?: string,
+    ShowFormTSX?: string,
+    CreateFormTSX?: string,
 }
 
 export interface IQuestionTypeFormState {
@@ -26,7 +27,7 @@ export interface IQuestionTypeFormProps {
     isOnlyView?: boolean,
 }
 
-export class QuestionTypeForm extends React.Component<IQuestionTypeFormProps, IQuestionTypeFormState> {
+export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, IQuestionTypeFormState> {
 
     private readonly _defaultError: IQuestionTypeFormError = {
         Name: '',
@@ -45,7 +46,7 @@ export class QuestionTypeForm extends React.Component<IQuestionTypeFormProps, IQ
         this._onSubmit = this._onSubmit.bind(this);
         this._onCodeEditorDidMount = this._onCodeEditorDidMount.bind(this);
 
-        const templateCode = `export class Counter extends React.Component<{}, {}> {
+        const templateCode = `export class ExampleQuestionType extends React.Component<{}, {}> {
     constructor() {
         super();
     }
@@ -155,7 +156,7 @@ export class QuestionTypeForm extends React.Component<IQuestionTypeFormProps, IQ
                     return response.json() as Promise<IQuestionTypeFormError>
                 }
             })
-            .then(data => this.setState({ error: data }))
+            .then(data => this.setStateWhenMount({ error: data }))
             .then(() => scrollTo(0, 0))
             .catch(error => {
                 console.log(error);
@@ -163,11 +164,11 @@ export class QuestionTypeForm extends React.Component<IQuestionTypeFormProps, IQ
             });
     }
 
-    private _isInit = false;
     private _editorModel: any = null;
+    private _libDisposable: any = null;
 
     private _onCodeEditorDidMount(editor: any, monaco: any) {
-        if (!this._isInit) {
+        if (!this._editorModel) {
 
             monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
                 declaration: false,
@@ -183,22 +184,34 @@ export class QuestionTypeForm extends React.Component<IQuestionTypeFormProps, IQ
                 .then(response => response.text())
                 .then(data => data.replace(`export = React;`, ``))
                 .then(data => {
-                    console.log(data);
-                    monaco.languages.typescript.typescriptDefaults.addExtraLib(data, 'dist/monaco/@types/react/index.d.ts');
+                    this._libDisposable = monaco.languages.typescript.typescriptDefaults.addExtraLib(data, 'dist/monaco/@types/react/index.d.ts');
                 });
 
             monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
                 noSemanticValidation: false,
                 noSyntaxValidation: false
-            })
+            });
 
             this._editorModel = monaco.editor.createModel(editor.getValue(), 'typescript', monaco.Uri.parse('file:///main.tsx'))
 
-            this._isInit = true;
         }
 
         editor.setModel(this._editorModel);
         editor.focus();
+    }
+
+    componentWillUnmount() {
+        super.componentWillUnmount();
+
+        if (this._libDisposable) {
+            this._libDisposable.dispose();
+            this._libDisposable = null;
+        }
+
+        if (this._editorModel) {
+            this._editorModel.dispose();
+            this._editorModel = null;
+        }
     }
 
     public render() {

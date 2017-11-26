@@ -17,6 +17,7 @@ import { MessageBar, MessageBarType } from 'office-ui-fabric-react/lib/MessageBa
 import { IQuestionTypeModel } from '../../../models/IQuestionTypeModel';
 import { ErrorBar } from '../../parts/ErrorBar';
 import { InfoBar } from '../../parts/InfoBar';
+import { HasFetchComponent } from '../../parts/HasFetchComponent';
 
 export interface IQuestionTypeListState {
     items: IQuestionTypeModel[],
@@ -32,7 +33,7 @@ export interface IQuestionTypeListProps {
     onSelected: (selection: Selection) => void
 }
 
-export class QuestionTypeList extends React.Component<IQuestionTypeListProps, IQuestionTypeListState> {
+export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, IQuestionTypeListState> {
 
     private _items: IQuestionTypeModel[];
     private _selection: Selection;
@@ -135,15 +136,19 @@ export class QuestionTypeList extends React.Component<IQuestionTypeListProps, IQ
         fetch('api/QuestionType/')
             .then(response => response.json() as Promise<IQuestionTypeModel[]>)
             .then(data => {
-                if (data == null) return;
-                this._items = data;
-                this.setState({
-                    items: this._items,
-                    isLoading: false,
-                });
-                this.props.onReload();
+                if (data != null) {
+                    this._items = data;
+                }
+
+                if (this._didMount) {
+                    this.setState({
+                        items: this._items,
+                        isLoading: false,
+                    });
+                    this.props.onReload();
+                }
             })
-            .catch(err => this.setState({ errorText: err.toString(), isLoading: false }));
+            .catch(err => this.setStateWhenMount({ errorText: err.toString(), isLoading: false }));
     }
 
     private _onColumnClick(ev: React.MouseEvent<HTMLElement>, column: IColumn) {
@@ -194,14 +199,13 @@ export class QuestionTypeList extends React.Component<IQuestionTypeListProps, IQ
     }
 
     public componentDidMount() {
+        super.componentDidMount();
         this._loadItems();
     }
 
     public componentWillUnmount() {
+        super.componentWillUnmount();
         this._items = [];
-        this.setState({
-            items: [],
-        });
     }
 
     public render() {
@@ -222,14 +226,6 @@ export class QuestionTypeList extends React.Component<IQuestionTypeListProps, IQ
                     onDismiss={() => this.setState({ errorText: '' })}
                 />
 
-                {isLoading && <InfoBar
-                    infoText='Loading...'
-                />}
-
-                {!isLoading && errorText == '' && items.length == 0 && <InfoBar
-                    infoText='No QuestionType.'
-                />}
-
                 <DetailsList
                     className='xhx-QuestionTypeList'
                     items={items}
@@ -238,6 +234,14 @@ export class QuestionTypeList extends React.Component<IQuestionTypeListProps, IQ
                     selection={this._selection}
                     setKey='questionTypeList'
                 />
+
+                {isLoading && <InfoBar
+                    infoText='Loading...'
+                />}
+
+                {!isLoading && errorText == '' && items.length == 0 && <InfoBar
+                    infoText='No QuestionType.'
+                />}
 
             </FocusZone >
         );

@@ -2,7 +2,7 @@
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react/lib/MessageBar';
 
 export interface IErrorBarProps {
-    errorText: string,
+    errorText?: string,
     onDismiss?: () => void,
 }
 
@@ -18,7 +18,7 @@ export class ErrorBar extends React.Component<IErrorBarProps, {}> {
 
         return (
             <div className='xhx-ErrorBar'>
-                {errorText != '' && <div className={'ms-slideDownIn10'}>
+                {errorText && errorText != '' && <div className={'ms-slideDownIn10'}>
                     <MessageBar
                         messageBarType={MessageBarType.error}
                         isMultiline={false}

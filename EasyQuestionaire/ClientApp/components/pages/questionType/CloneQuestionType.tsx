@@ -7,6 +7,7 @@ import { QuestionTypeForm } from '../../parts/questionType/QuestionTypeForm';
 import { IQuestionTypeModel } from '../../../models/IQuestionTypeModel';
 import { ErrorBar } from '../../parts/ErrorBar';
 import { InfoBar } from '../../parts/InfoBar';
+import { HasFetchComponent } from '../../parts/HasFetchComponent';
 
 export interface ICloneQuestionTypeState {
     srcModel: IQuestionTypeModel | null,
@@ -14,7 +15,7 @@ export interface ICloneQuestionTypeState {
     errorText: string,
 }
 
-export class CloneQuestionType extends React.Component<RouteComponentProps<{ id: number }>, ICloneQuestionTypeState> {
+export class CloneQuestionType extends HasFetchComponent<RouteComponentProps<{ id: number }>, ICloneQuestionTypeState> {
 
     constructor(props: RouteComponentProps<{ id: number }>) {
         super(props);
@@ -30,11 +31,12 @@ export class CloneQuestionType extends React.Component<RouteComponentProps<{ id:
         const id = this.props.match.params.id;
         fetch('api/questionType/' + id)
             .then(response => response.json() as Promise<IQuestionTypeModel>)
-            .then(data => this.setState({ srcModel: data, isLoading: false }))
-            .catch(error => { this.setState({ errorText: error, isLoading: false }); });
+            .then(data => this.setStateWhenMount({ srcModel: data, isLoading: false }))
+            .catch(error => this.setStateWhenMount({ errorText: error, isLoading: false }));
     }
 
     public componentDidMount() {
+        super.componentDidMount();
         this._loadModel();
     }
 
@@ -51,7 +53,7 @@ export class CloneQuestionType extends React.Component<RouteComponentProps<{ id:
         } : null;
 
         return (<div className='xhx-CloneQuestionType'>
-            <TwoLevelBreadcrumb title='Question Type' subtitle={'Clone: ' + cloneName} history={this.props.history} />
+            <TwoLevelBreadcrumb title='Question Type' subtitle={'Clone: ' + cloneName} history={this.props.history} url='/questionType' />
 
             <ErrorBar
                 errorText={errorText}

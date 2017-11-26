@@ -7,6 +7,7 @@ import { QuestionTypeForm } from '../../parts/questionType/QuestionTypeForm';
 import { IQuestionTypeModel } from '../../../models/IQuestionTypeModel';
 import { ErrorBar } from '../../parts/ErrorBar';
 import { InfoBar } from '../../parts/InfoBar';
+import { HasFetchComponent } from '../../parts/HasFetchComponent';
 
 export interface IViewQuestionTypeState {
     srcModel: IQuestionTypeModel | null,
@@ -14,7 +15,7 @@ export interface IViewQuestionTypeState {
     errorText: string,
 }
 
-export class ViewQuestionType extends React.Component<RouteComponentProps<{ id: number }>, IViewQuestionTypeState> {
+export class ViewQuestionType extends HasFetchComponent<RouteComponentProps<{ id: number }>, IViewQuestionTypeState> {
 
     constructor(props: RouteComponentProps<{ id: number }>) {
         super(props);
@@ -30,15 +31,16 @@ export class ViewQuestionType extends React.Component<RouteComponentProps<{ id: 
         const id = this.props.match.params.id;
         fetch('api/questionType/' + id)
             .then(response => response.json() as Promise<IQuestionTypeModel>)
-            .then(data => this.setState({ srcModel: data, isLoading: false }))
-            .catch(error => { this.setState({ errorText: error, isLoading: false }); });
+            .then(data => this.setStateWhenMount({ srcModel: data, isLoading: false }))
+            .catch(error => this.setStateWhenMount({ errorText: error, isLoading: false }));
     }
 
-    public componentDidMount() {
+    componentDidMount() {
+        super.componentDidMount();
         this._loadModel();
     }
 
-    public render() {
+    render() {
 
         const isLoading = this.state.isLoading;
         const errorText = this.state.errorText;
@@ -46,7 +48,7 @@ export class ViewQuestionType extends React.Component<RouteComponentProps<{ id: 
         const modelName = srcModel ? srcModel.name : this.props.match.params.id;
 
         return (<div className='xhx-CloneQuestionType'>
-            <TwoLevelBreadcrumb title='Question Type' subtitle={'View: ' + modelName} history={this.props.history} />
+            <TwoLevelBreadcrumb title='Question Type' subtitle={'View: ' + modelName} history={this.props.history} url='/questionType' />
 
             <ErrorBar
                 errorText={errorText}

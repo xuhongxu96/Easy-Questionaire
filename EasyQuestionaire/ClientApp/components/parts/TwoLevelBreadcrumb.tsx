@@ -3,11 +3,11 @@ import * as ReactDOM from 'react-dom';
 import { History } from 'history';
 import { Breadcrumb } from 'office-ui-fabric-react/lib/Breadcrumb';
 
-export function TwoLevelBreadcrumb(props: { title: string, subtitle?: string, history?: History }) {
+export function TwoLevelBreadcrumb(props: { title: string, subtitle?: string, history?: History, url?: string }) {
     if (props.subtitle) {
         return <Breadcrumb
             items={[
-                { text: props.title, 'key': props.title, onClick: () => props.history && props.history.goBack() },
+                { text: props.title, 'key': props.title, onClick: () => props.history && props.url && props.history.push(props.url) },
                 { text: props.subtitle, 'key': props.subtitle }
             ]}
             ariaLabel={'Website breadcrumb'}

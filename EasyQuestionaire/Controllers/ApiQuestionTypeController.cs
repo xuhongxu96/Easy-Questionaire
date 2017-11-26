@@ -19,7 +19,6 @@ namespace EasyQuestionaire.Controllers
 
         public ApiQuestionTypeController(QuestionaireContext context)
         {
-            Thread.Sleep(1000);
             _context = context;
         }
 

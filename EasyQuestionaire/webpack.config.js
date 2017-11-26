@@ -28,17 +28,17 @@ module.exports = (env) => {
             new webpack.DllReferencePlugin({
                 context: __dirname,
                 manifest: require('./wwwroot/dist/vendor-manifest.json')
-            }),
+            })/*,
             new CopyWebpackPlugin([
                 {
                     from: 'node_modules/monaco-editor/min/vs',
                     to: 'vs',
                 },
                 {
-                    from: 'node_modules/@types/react',
-                    to: 'monaco/@types/react',
+                    from: 'node_modules/@types/react/index.d.ts',
+                    to: 'monaco/@types/react/index.d.ts',
                 }
-            ])
+            ])*/
         ].concat(isDevBuild ? [
             // Plugins that apply in development builds only
             new webpack.SourceMapDevToolPlugin({
