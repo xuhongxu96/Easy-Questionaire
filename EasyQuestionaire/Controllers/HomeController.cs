@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EasyQuestionaire.Controllers
 {
+
     public class HomeController : Controller
     {
         public IActionResult Index()

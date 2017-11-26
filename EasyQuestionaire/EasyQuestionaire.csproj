@@ -6,14 +6,41 @@
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <UserSecretsId>2cac172c-0050-4b30-845b-f41343d12262</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\components\pages\Questionaire.tsx" />
+    <None Remove="ClientApp\components\pages\questionType\CreateQuestionType.tsx" />
+    <None Remove="ClientApp\components\parts\ErrorBar.tsx" />
+    <None Remove="ClientApp\components\parts\InfoBar.tsx" />
+    <None Remove="ClientApp\models\IQuestionTypeModel.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\components\pages\questionType\ViewQuestionType.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\pages\questionType\CloneQuestionType.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\pages\questionType\CreateQuestionType.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\parts\ErrorBar.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\parts\InfoBar.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\parts\questionType\QuestionTypeForm.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\parts\TwoLevelBreadcrumb.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\parts\questionType\QuestionTypeList.tsx" />
+    <TypeScriptCompile Include="ClientApp\models\IQuestionaireModel.ts" />
+    <TypeScriptCompile Include="ClientApp\components\pages\questionType\QuestionType.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\pages\Questionaire.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\parts\QuestionaireList.tsx" />
+    <TypeScriptCompile Include="ClientApp\models\IQuestionTypeModel.ts" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

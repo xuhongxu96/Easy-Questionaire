@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "devDependencies": {
     "@types/history": "4.6.0",
-    "@types/react": "15.0.35",
+    "@types/react": "15.0.38",
     "@types/react-dom": "15.5.1",
     "@types/react-hot-loader": "3.0.3",
     "@types/react-router": "4.0.12",
@@ -14,6 +14,7 @@
     "aspnet-webpack-react": "^3.0.0",
     "awesome-typescript-loader": "3.2.1",
     "bootstrap": "3.3.7",
+    "copy-webpack-plugin": "^4.2.3",
     "css-loader": "0.28.4",
     "event-source-polyfill": "0.0.9",
     "extract-text-webpack-plugin": "2.1.2",
@@ -32,6 +33,10 @@
     "webpack-hot-middleware": "2.18.2"
   },
   "dependencies": {
-    "office-ui-fabric-react": "^5.22.0"
+    "@types/prop-types": "^15.5.2",
+    "@types/react-monaco-editor": "^0.10.0",
+    "monaco-editor": "^0.10.1",
+    "office-ui-fabric-react": "^5.22.0",
+    "react-monaco-editor": "^0.12.0"
   }
 }

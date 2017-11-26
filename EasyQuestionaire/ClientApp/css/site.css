@@ -64,3 +64,12 @@
         text-overflow: ellipsis;
     }
 }
+
+.ms-Breadcrumb {
+    margin-bottom: 32px!important;
+}
+
+.xhx-LargeButton {
+    width: 100%;
+    margin: 8px 0;
+}

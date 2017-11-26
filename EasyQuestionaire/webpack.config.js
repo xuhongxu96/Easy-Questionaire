@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const bundleOutputDir = './wwwroot/dist';
 
 module.exports = (env) => {
@@ -27,7 +28,17 @@ module.exports = (env) => {
             new webpack.DllReferencePlugin({
                 context: __dirname,
                 manifest: require('./wwwroot/dist/vendor-manifest.json')
-            })
+            }),
+            new CopyWebpackPlugin([
+                {
+                    from: 'node_modules/monaco-editor/min/vs',
+                    to: 'vs',
+                },
+                {
+                    from: 'node_modules/@types/react',
+                    to: 'monaco/@types/react',
+                }
+            ])
         ].concat(isDevBuild ? [
             // Plugins that apply in development builds only
             new webpack.SourceMapDevToolPlugin({
@@ -35,9 +46,9 @@ module.exports = (env) => {
                 moduleFilenameTemplate: path.relative(bundleOutputDir, '[resourcePath]') // Point sourcemap entries to the original file locations on disk
             })
         ] : [
-            // Plugins that apply in production builds only
-            new webpack.optimize.UglifyJsPlugin(),
-            new ExtractTextPlugin('site.css')
-        ])
+                // Plugins that apply in production builds only
+                new webpack.optimize.UglifyJsPlugin(),
+                new ExtractTextPlugin('site.css')
+            ])
     }];
 };
