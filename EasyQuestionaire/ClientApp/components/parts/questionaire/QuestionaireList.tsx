@@ -10,47 +10,60 @@ import {
 } from 'office-ui-fabric-react/lib/DetailsList';
 import { Label } from 'office-ui-fabric-react/lib/Label';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
-
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { ComboBox, IComboBoxOption } from 'office-ui-fabric-react/lib/ComboBox';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react/lib/MessageBar';
-import { IQuestionTypeModel } from '../../../models/IQuestionTypeModel';
 import { ErrorBar } from '../../parts/ErrorBar';
 import { InfoBar } from '../../parts/InfoBar';
 import { HasFetchComponent } from '../../parts/HasFetchComponent';
+import { IQuestionaireModel } from '../../../models/IQuestionaireModel';
 
-export interface IQuestionTypeListState {
-    items: IQuestionTypeModel[],
+
+export interface IQuestionaireListState {
+    items: IQuestionaireModel[],
     columns: IColumn[],
     errorText: string,
     isLoading: boolean,
 }
 
-export interface IQuestionTypeListProps {
+export interface IQuestionaireListProps {
     filterText: string,
+    filterEnabled: boolean | null,
     onReload: () => void,
-    onSelected: (selection: Selection) => void
+    onSelected: (selection: Selection) => void,
 }
 
-export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, IQuestionTypeListState> {
+export class QuestionaireList extends HasFetchComponent<IQuestionaireListProps, IQuestionaireListState> {
 
-    private _items: IQuestionTypeModel[];
+    private _items: IQuestionaireModel[];
     private _selection: Selection;
 
-    constructor() {
-        super()
+    private _filterStates = [
+        { key: 'All', text: 'All' },
+        { key: 'Enabled', text: 'Available' },
+        { key: 'Disabled', text: 'Stopped' },
+    ];
+    private _filterStatesMap: { [key: string]: boolean | null } = {
+        'All': null,
+        'Available': true,
+        'Stopped': false
+    };
+
+    constructor(props: IQuestionaireListProps) {
+        super(props)
 
         this._onColumnClick = this._onColumnClick.bind(this);
         this._sortItems = this._sortItems.bind(this);
+
         this._selection = new Selection({
             onSelectionChanged: () => this._onSelectionChanged()
         });
 
         const _columns: IColumn[] = [
             {
-                key: 'name',
-                name: 'Name',
-                fieldName: 'name',
+                key: 'title',
+                name: 'Title',
+                fieldName: 'title',
                 minWidth: 100,
                 maxWidth: 300,
                 isRowHeader: true,
@@ -59,6 +72,48 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
                 isSortedDescending: false,
                 onColumnClick: this._onColumnClick,
                 data: 'string',
+                isPadded: true
+            },
+            {
+                key: 'description',
+                name: 'Description',
+                fieldName: 'description',
+                minWidth: 200,
+                maxWidth: 600,
+                isRowHeader: false,
+                isResizable: true,
+                isSorted: false,
+                isSortedDescending: false,
+                onColumnClick: this._onColumnClick,
+                data: 'string',
+                isPadded: true
+            },
+            {
+                key: 'startDate',
+                name: 'Start Date',
+                fieldName: 'startDate',
+                minWidth: 50,
+                maxWidth: 100,
+                isRowHeader: false,
+                isResizable: true,
+                isSorted: false,
+                isSortedDescending: false,
+                onColumnClick: this._onColumnClick,
+                data: 'Date',
+                isPadded: true
+            },
+            {
+                key: 'endDate',
+                name: 'End Date',
+                fieldName: 'endDate',
+                minWidth: 50,
+                maxWidth: 100,
+                isRowHeader: false,
+                isResizable: true,
+                isSorted: false,
+                isSortedDescending: false,
+                onColumnClick: this._onColumnClick,
+                data: 'Date',
                 isPadded: true
             },
             {
@@ -74,7 +129,7 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
                 onColumnClick: this._onColumnClick,
                 data: 'string',
                 isPadded: true,
-                onRender: (item: IQuestionTypeModel) => {
+                onRender: (item: IQuestionaireModel) => {
                     return (
                         <span>
                             {new Date(item.updatedAt).toLocaleString()}
@@ -95,7 +150,7 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
                 onColumnClick: this._onColumnClick,
                 data: 'string',
                 isPadded: true,
-                onRender: (item: IQuestionTypeModel) => {
+                onRender: (item: IQuestionaireModel) => {
                     return (
                         <span>
                             {new Date(item.createdAt).toLocaleString()}
@@ -119,8 +174,8 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
     }
 
     private _loadItems() {
-        fetch('api/QuestionType/')
-            .then(response => response.json() as Promise<IQuestionTypeModel[]>)
+        fetch('api/Questionaire/')
+            .then(response => response.json() as Promise<IQuestionaireModel[]>)
             .then(data => {
                 if (data != null) {
                     this._items = data;
@@ -139,7 +194,7 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
 
     private _onColumnClick(ev: React.MouseEvent<HTMLElement>, column: IColumn) {
         const { columns, items } = this.state;
-        let newItems: IQuestionTypeModel[] = items.slice();
+        let newItems: IQuestionaireModel[] = items.slice();
         let newColumns: IColumn[] = columns.slice();
         let currColumn: IColumn = newColumns.filter((currCol: IColumn, idx: number) => {
             return column.key === currCol.key;
@@ -160,9 +215,9 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
         });
     }
 
-    private _sortItems(items: IQuestionTypeModel[], sortBy: string, descending = false): IQuestionTypeModel[] {
+    private _sortItems(items: IQuestionaireModel[], sortBy: string, descending = false): IQuestionaireModel[] {
         if (descending) {
-            return items.sort((a: IQuestionTypeModel, b: IQuestionTypeModel) => {
+            return items.sort((a: IQuestionaireModel, b: IQuestionaireModel) => {
                 if (a[sortBy] < b[sortBy]) {
                     return 1;
                 }
@@ -172,7 +227,7 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
                 return 0;
             });
         } else {
-            return items.sort((a: IQuestionTypeModel, b: IQuestionTypeModel) => {
+            return items.sort((a: IQuestionaireModel, b: IQuestionaireModel) => {
                 if (a[sortBy] < b[sortBy]) {
                     return -1;
                 }
@@ -190,7 +245,6 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
     }
 
     public componentWillUnmount() {
-        super.componentWillUnmount();
         this._items = [];
     }
 
@@ -199,10 +253,13 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
         const columns = this.state.columns;
         const errorText = this.state.errorText;
         const filterText = this.props.filterText;
+        const filterEnabled = this.props.filterEnabled;
         const isLoading = this.state.isLoading;
         const rawItems = this.state.items;
         const items = rawItems.filter(item =>
-            item.name.toLowerCase().indexOf(filterText.toLowerCase()) >= 0);
+            item.name.toLowerCase().indexOf(filterText.toLowerCase()) >= 0
+            && item.isEnabled == filterEnabled);
+
 
         return (
             <FocusZone direction={FocusZoneDirection.vertical}>
@@ -213,12 +270,12 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
                 />
 
                 <DetailsList
-                    className='xhx-QuestionTypeList'
+                    className='xhx-QuestionaireList'
                     items={items}
                     columns={columns}
                     selectionMode={SelectionMode.single}
                     selection={this._selection}
-                    setKey='questionTypeList'
+                    setKey='questionaireList'
                 />
 
                 {isLoading && <InfoBar
@@ -226,7 +283,7 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
                 />}
 
                 {!isLoading && errorText == '' && items.length == 0 && <InfoBar
-                    infoText='No QuestionType.'
+                    infoText='No Questionaire.'
                 />}
 
             </FocusZone >

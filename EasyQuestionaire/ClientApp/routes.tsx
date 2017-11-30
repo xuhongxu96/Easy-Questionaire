@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Route } from 'react-router-dom';
 import { Layout } from './components/parts/Layout';
 import { Home } from './components/pages/Home';
-import { Questionaire } from './components/pages/Questionaire'
+import { Questionaire } from './components/pages/questionaire/Questionaire'
 import { QuestionType } from './components/pages/questionType/QuestionType'
 import { CreateQuestionType } from './components/pages/questionType/CreateQuestionType'
 import { CloneQuestionType } from './components/pages/questionType/CloneQuestionType'

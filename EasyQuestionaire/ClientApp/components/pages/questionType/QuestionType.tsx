@@ -107,7 +107,6 @@ export class QuestionType extends React.Component<RouteComponentProps<{}>, IQues
             <CommandBar
                 ref={this._onBindSearchBox}
                 isSearchBoxVisible={true}
-                onChange={e => console.log(e)}
                 searchPlaceholderText='Filter by name...'
                 elipisisAriaLabel='More options'
                 items={commands}

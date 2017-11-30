@@ -40,8 +40,8 @@
     <TypeScriptCompile Include="ClientApp\components\parts\questionType\QuestionTypeList.tsx" />
     <TypeScriptCompile Include="ClientApp\models\IQuestionaireModel.ts" />
     <TypeScriptCompile Include="ClientApp\components\pages\questionType\QuestionType.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\pages\Questionaire.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\parts\QuestionaireList.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\pages\questionaire\Questionaire.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\parts\questionaire\QuestionaireList.tsx" />
     <TypeScriptCompile Include="ClientApp\models\IQuestionTypeModel.ts" />
   </ItemGroup>
 

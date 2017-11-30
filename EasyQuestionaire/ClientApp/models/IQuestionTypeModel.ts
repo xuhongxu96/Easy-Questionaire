@@ -1,5 +1,5 @@
 ﻿export interface IQuestionTypeModel {
-    [key: string]: any;
+    [key: string]: any,
     id: number,
     name: string,
     createFormTSX: string,

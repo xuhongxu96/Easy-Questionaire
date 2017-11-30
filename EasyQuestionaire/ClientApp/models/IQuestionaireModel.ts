@@ -1,4 +1,5 @@
 ﻿export interface IQuestionaireModel {
+    [key: string]: any,
     id: number,
     title: string,
     description: string,
