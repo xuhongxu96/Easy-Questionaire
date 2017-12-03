@@ -1,4 +1,7 @@
-﻿import * as React from 'react';
+﻿
+/// <reference types="monaco-editor" />
+
+import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import MonacoEditor from 'react-monaco-editor';
 import { Promise } from 'es6-promise';
@@ -6,6 +9,7 @@ import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Label } from 'office-ui-fabric-react/lib/Label';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react/lib/MessageBar';
+import { Spinner } from 'office-ui-fabric-react/lib/Spinner';
 import { IQuestionTypeModel } from '../../../models/IQuestionTypeModel';
 import { ErrorBar } from '../ErrorBar';
 import { HasFetchComponent } from '../../parts/HasFetchComponent';
@@ -20,6 +24,7 @@ export interface IQuestionTypeFormError {
 export interface IQuestionTypeFormState {
     model: IQuestionTypeModel,
     error: IQuestionTypeFormError,
+    isSubmitting: boolean,
 }
 
 export interface IQuestionTypeFormProps {
@@ -29,24 +34,11 @@ export interface IQuestionTypeFormProps {
 
 export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, IQuestionTypeFormState> {
 
-    private readonly _defaultError: IQuestionTypeFormError = {
-        Name: '',
-        OwnerIP: '',
-        ShowFormTSX: '',
-        CreateFormTSX: '',
-    };
+    private _createFormEditorModel: any = null;
+    private _showFormEditorModel: any = null;
+    private _libDisposable: any = null;
 
-    constructor(props: IQuestionTypeFormProps) {
-        super(props)
-
-        this._getNameErrorMessagePromise = this._getNameErrorMessagePromise.bind(this);
-        this._onNameChanged = this._onNameChanged.bind(this);
-        this._onCreateFormChanged = this._onCreateFormChanged.bind(this);
-        this._onShowFormChanged = this._onShowFormChanged.bind(this);
-        this._onSubmit = this._onSubmit.bind(this);
-        this._onCodeEditorDidMount = this._onCodeEditorDidMount.bind(this);
-
-        const templateCode = `export class ExampleQuestionType extends React.Component<{}, {}> {
+    private _templateCode = `export class ExampleQuestionType extends React.Component<{}, {}> {
     constructor() {
         super();
     }
@@ -56,11 +48,23 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
     }
 }`;
 
-        let cloneModel = {
+    constructor(props: IQuestionTypeFormProps) {
+        super(props)
+
+        this._getNameErrorMessagePromise = this._getNameErrorMessagePromise.bind(this);
+        this._onNameChanged = this._onNameChanged.bind(this);
+        this._onCreateFormChanged = this._onCreateFormChanged.bind(this);
+        this._onShowFormChanged = this._onShowFormChanged.bind(this);
+        this._onSubmit = this._onSubmit.bind(this);
+        // this._initEditor = this._initEditor.bind(this);
+
+        let cloneModel: IQuestionTypeModel = {
             id: 0,
             name: '',
-            createFormTSX: templateCode,
-            showFormTSX: templateCode,
+            createFormTSX: this._templateCode,
+            showFormTSX: this._templateCode,
+            compiledCreateForm: '',
+            compiledShowForm: '',
             ownerIP: '',
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -78,7 +82,8 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
 
         this.state = {
             model: cloneModel,
-            error: this._defaultError,
+            error: {},
+            isSubmitting: false,
         }
     }
 
@@ -104,9 +109,9 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
         this.setState({
             model: {
                 ...model,
-                name: value
+                name: value,
             },
-            error: this._defaultError,
+            error: {},
         });
     }
 
@@ -118,7 +123,7 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
                 ...model,
                 createFormTSX: value
             },
-            error: this._defaultError,
+            error: {},
         });
     }
 
@@ -130,74 +135,103 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
                 ...model,
                 showFormTSX: value
             },
-            error: this._defaultError,
+            error: {},
         });
     }
 
     private _onSubmit() {
+
         if (this.props.isOnlyView) return;
 
-        const model = this.state.model;
+        this.setState({ isSubmitting: true });
 
-        fetch('api/QuestionType', {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(model)
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert("Successfully created.");
-                    history.back();
-                    return this._defaultError;
-                } else {
-                    return response.json() as Promise<IQuestionTypeFormError>
-                }
-            })
-            .then(data => this.setStateWhenMount({ error: data }))
-            .then(() => scrollTo(0, 0))
-            .catch(error => {
-                console.log(error);
-                scrollTo(0, 0);
+        const model = { ...this.state.model };
+        const pThis = this;
+
+        const createFormEditorModel = this._createFormEditorModel;
+        const showFormEditorModel = this._showFormEditorModel;
+        monaco.languages.typescript.getTypeScriptWorker()
+            .then(function (worker: any) {
+                worker(createFormEditorModel.uri)
+                    .then(function (client: any) {
+                        client.getEmitOutput(createFormEditorModel.uri.toString())
+                            .then(function (res: any) {
+                                model.compiledCreateForm = res.outputFiles[0].text;
+
+                                monaco.languages.typescript.getTypeScriptWorker()
+                                    .then(function (worker: any) {
+                                        worker(showFormEditorModel.uri)
+                                            .then(function (client: any) {
+                                                client.getEmitOutput(showFormEditorModel.uri.toString())
+                                                    .then(function (res: any) {
+                                                        model.compiledShowForm = res.outputFiles[0].text;
+
+                                                        fetch('api/QuestionType', {
+                                                            headers: {
+                                                                'Accept': 'application/json',
+                                                                'Content-Type': 'application/json'
+                                                            },
+                                                            method: 'POST',
+                                                            body: JSON.stringify(model)
+                                                        })
+                                                            .then(response => {
+                                                                if (response.ok) {
+                                                                    alert("Successfully created.");
+                                                                    history.back();
+                                                                    return {};
+                                                                } else {
+                                                                    return response.json() as Promise<IQuestionTypeFormError>
+                                                                }
+                                                            })
+                                                            .then(data => pThis.setStateWhenMount({ error: data, isSubmitting: false }))
+                                                            .then(() => scrollTo(0, 0))
+                                                            .catch(error => {
+                                                                console.log(error);
+                                                                scrollTo(0, 0);
+                                                                pThis.setStateWhenMount({ isSubmitting: false });
+                                                            });
+                                                    });
+                                            });
+                                    });
+
+                            });
+                    });
             });
+
     }
 
-    private _editorModel: any = null;
-    private _libDisposable: any = null;
+    private _initEditor() {
+        monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+            declaration: false,
+            target: monaco.languages.typescript.ScriptTarget.ES5,
+            allowNonTsExtensions: true,
+            moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+            module: monaco.languages.typescript.ModuleKind.CommonJS,
+            jsx: monaco.languages.typescript.JsxEmit.React,
+            typeRoots: ["dist/monaco/@types/"]
+        });
 
-    private _onCodeEditorDidMount(editor: any, monaco: any) {
-        if (!this._editorModel) {
-
-            monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-                declaration: false,
-                target: monaco.languages.typescript.ScriptTarget.ES5,
-                allowNonTsExtensions: true,
-                moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-                module: monaco.languages.typescript.ModuleKind.CommonJS,
-                jsx: 'react',
-                typeRoots: ["dist/monaco/@types/"]
-            });
-
-            fetch('dist/monaco/@types/react/index.d.ts')
-                .then(response => response.text())
-                .then(data => data.replace(`export = React;`, ``))
-                .then(data => {
+        fetch('dist/monaco/@types/react/index.d.ts')
+            .then(response => response.text())
+            .then(data => data.replace(`export = React;`, ``))
+            .then(data => {
+                if (!this._libDisposable) {
                     this._libDisposable = monaco.languages.typescript.typescriptDefaults.addExtraLib(data, 'dist/monaco/@types/react/index.d.ts');
-                });
-
-            monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-                noSemanticValidation: false,
-                noSyntaxValidation: false
+                }
             });
 
-            this._editorModel = monaco.editor.createModel(editor.getValue(), 'typescript', monaco.Uri.parse('file:///main.tsx'))
+        monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+            noSemanticValidation: false,
+            noSyntaxValidation: false
+        });
 
+        if (!this._createFormEditorModel) {
+            this._createFormEditorModel = monaco.editor.createModel(this._templateCode, 'typescript', monaco.Uri.parse('file:///create.tsx'))
         }
 
-        editor.setModel(this._editorModel);
-        editor.focus();
+        if (!this._showFormEditorModel) {
+            this._showFormEditorModel = monaco.editor.createModel(this._templateCode, 'typescript', monaco.Uri.parse('file:///show.tsx'))
+        }
     }
 
     componentWillUnmount() {
@@ -208,9 +242,14 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
             this._libDisposable = null;
         }
 
-        if (this._editorModel) {
-            this._editorModel.dispose();
-            this._editorModel = null;
+        if (this._createFormEditorModel) {
+            this._createFormEditorModel.dispose();
+            this._createFormEditorModel = null;
+        }
+
+        if (this._showFormEditorModel) {
+            this._showFormEditorModel.dispose();
+            this._showFormEditorModel = null;
         }
     }
 
@@ -221,6 +260,7 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
         const codeShow = this.state.model.showFormTSX;
 
         const error = this.state.error;
+        const isSubmitting = this.state.isSubmitting;
 
         const isOnlyView = this.props.isOnlyView;
 
@@ -233,7 +273,10 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
 
         return (<div className='xhx-QuestionTypeForm'>
             <form>
-                {!isOnlyView && <PrimaryButton
+
+                {isSubmitting && <Spinner label='Saving...' />}
+
+                {!isOnlyView && !isSubmitting && <PrimaryButton
                     className='xhx-LargeButton'
                     onClick={this._onSubmit}
                 > Save </PrimaryButton>}
@@ -261,7 +304,7 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
                     value={codeCreate}
                     options={{ readOnly: isOnlyView }}
                     requireConfig={requireConfig}
-                    editorDidMount={this._onCodeEditorDidMount}
+                    editorDidMount={(editor, monaco) => { this._initEditor(); editor.setModel(this._createFormEditorModel); }}
                     onChange={this._onCreateFormChanged}
                 />
 
@@ -279,11 +322,13 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
                     value={codeShow}
                     options={{ readOnly: isOnlyView }}
                     requireConfig={requireConfig}
-                    editorDidMount={this._onCodeEditorDidMount}
+                    editorDidMount={(editor, monaco) => { this._initEditor(); editor.setModel(this._showFormEditorModel); }}
                     onChange={this._onShowFormChanged}
                 />
 
-                {!isOnlyView && <PrimaryButton
+                {isSubmitting && <Spinner className='xhx-BottomSpinner' label='Saving...' />}
+
+                {!isOnlyView && !isSubmitting && <PrimaryButton
                     className='xhx-LargeButton'
                     onClick={this._onSubmit}
                 > Save </PrimaryButton>}

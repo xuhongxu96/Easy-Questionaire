@@ -35,6 +35,14 @@ namespace EasyQuestionaire.Data
             SetupDateRecordModel<Question>(modelBuilder);
             SetupDateRecordModel<Answer>(modelBuilder);
 
+            modelBuilder.Entity<Questionaire>()
+                .HasIndex(o => o.Title)
+                .IsUnique();
+
+            modelBuilder.Entity<Questionaire>()
+                .HasIndex(o => o.Guid)
+                .IsUnique();
+
             modelBuilder.Entity<QuestionType>()
                 .HasIndex(o => o.Name)
                 .IsUnique();

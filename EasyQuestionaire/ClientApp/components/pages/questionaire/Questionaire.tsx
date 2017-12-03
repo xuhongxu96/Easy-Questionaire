@@ -18,9 +18,9 @@ export interface IQuestionaireState {
 export class Questionaire extends React.Component<RouteComponentProps<{}>, IQuestionaireState> {
 
     private _filterStatesMap: { [key: string]: boolean | null } = {
-        'all': null,
-        'available': true,
-        'stopped': false
+        'All': null,
+        'Available': true,
+        'Stopped': false,
     };
 
     constructor() {
@@ -88,10 +88,18 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
             {
                 key: 'fill',
                 name: 'Fill',
-                icon: 'Edit',
+                icon: 'IssueTracking',
                 className: 'ms-CommandBarItem',
                 disabled: selectedModel == null,
                 onClick: () => this.props.history.push('questionaire/fill/' + (selectedModel ? selectedModel.id : '')),
+            },
+            {
+                key: 'edit',
+                name: 'Edit',
+                icon: 'Edit',
+                className: 'ms-CommandBarItem',
+                disabled: selectedModel == null,
+                onClick: () => this.props.history.push('questionaire/edit/' + (selectedModel ? selectedModel.id : '')),
             },
         ];
 
@@ -129,7 +137,7 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
             }
         ];
 
-        return <div>
+        return <div className='xhx-Page xhx-Questionaire'>
             <TwoLevelBreadcrumb title='Questionaire' />
 
             <CommandBar

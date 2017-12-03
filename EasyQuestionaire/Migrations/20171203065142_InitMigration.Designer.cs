@@ -11,7 +11,7 @@ using System;
 namespace EasyQuestionaire.Migrations
 {
     [DbContext(typeof(QuestionaireContext))]
-    [Migration("20171125010755_InitMigration")]
+    [Migration("20171203065142_InitMigration")]
     partial class InitMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,7 @@ namespace EasyQuestionaire.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
-                    b.Property<string>("OnwerIP");
+                    b.Property<string>("OwnerIP");
 
                     b.Property<int>("QuestionId");
 
@@ -103,6 +103,12 @@ namespace EasyQuestionaire.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Guid")
+                        .IsUnique();
+
+                    b.HasIndex("Title")
+                        .IsUnique();
+
                     b.ToTable("Questionaire");
                 });
 
@@ -110,6 +116,12 @@ namespace EasyQuestionaire.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CompiledCreateForm")
+                        .IsRequired();
+
+                    b.Property<string>("CompiledShowForm")
+                        .IsRequired();
 
                     b.Property<string>("CreateFormTSX")
                         .IsRequired();

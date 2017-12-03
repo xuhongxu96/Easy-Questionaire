@@ -11,10 +11,13 @@
 
   <ItemGroup>
     <None Remove="ClientApp\components\pages\Questionaire.tsx" />
+    <None Remove="ClientApp\components\pages\questionaire\CreateQuestionaire.tsx" />
     <None Remove="ClientApp\components\pages\questionType\CreateQuestionType.tsx" />
     <None Remove="ClientApp\components\parts\ErrorBar.tsx" />
     <None Remove="ClientApp\components\parts\HasFetchComponent.tsx" />
     <None Remove="ClientApp\components\parts\InfoBar.tsx" />
+    <None Remove="ClientApp\components\parts\questionaire\QuestionaireForm.tsx" />
+    <None Remove="ClientApp\components\parts\questionType\DynamicQuestionTypeComponent.tsx" />
     <None Remove="ClientApp\models\IQuestionTypeModel.ts" />
   </ItemGroup>
 
@@ -29,12 +32,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\components\pages\questionaire\CreateQuestionaire.tsx" />
     <TypeScriptCompile Include="ClientApp\components\pages\questionType\ViewQuestionType.tsx" />
     <TypeScriptCompile Include="ClientApp\components\pages\questionType\CloneQuestionType.tsx" />
     <TypeScriptCompile Include="ClientApp\components\pages\questionType\CreateQuestionType.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\ErrorBar.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\HasFetchComponent.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\InfoBar.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\parts\questionaire\QuestionaireForm.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\parts\questionType\DynamicQuestionTypeComponent.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionType\QuestionTypeForm.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\TwoLevelBreadcrumb.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionType\QuestionTypeList.tsx" />

@@ -16,9 +16,40 @@ namespace EasyQuestionaire.Models
         public string CreateFormTSX { get; set; }
         [Required]
         public string ShowFormTSX { get; set; }
+        [Required]
+        public string CompiledCreateForm { get; set; }
+        [Required]
+        public string CompiledShowForm { get; set; }
         public string OwnerIP { get; set; }
-
+       
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
+
+        [NotMapped]
+        public object SafeContent
+        {
+            get
+            {
+                var ip = "*.*.*.*";
+                var ipParts = OwnerIP.Split('.');
+                if (ipParts.Length == 4)
+                {
+                    ip = ipParts[0] + ".*.*." + ipParts[3];
+                }
+
+                return new
+                {
+                    Id = Id,
+                    Name = Name,
+                    CreateFormTSX = CreateFormTSX,
+                    ShowFormTSX = ShowFormTSX,
+                    CompiledCreateForm = CompiledCreateForm,
+                    CompiledShowForm = CompiledShowForm,
+                    OwnerIP = ip,
+                    CreatedAt = CreatedAt,
+                    UpdatedAt = UpdatedAt,
+                };
+            }
+        }
     }
 }

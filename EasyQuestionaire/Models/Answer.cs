@@ -12,7 +12,7 @@ namespace EasyQuestionaire.Models
         public int Id { get; set; }
         [Required]
         public string Content { get; set; }
-        public string OnwerIP { get; set; }
+        public string OwnerIP { get; set; }
         [Required]
         public DateTimeOffset TimeSpent { get; set; }
 
@@ -22,5 +22,31 @@ namespace EasyQuestionaire.Models
 
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
+
+        [NotMapped]
+        public object SafeContent
+        {
+            get
+            {
+                var ip = "*.*.*.*";
+                var ipParts = OwnerIP.Split('.');
+                if (ipParts.Length == 4)
+                {
+                    ip = ipParts[0] + ".*.*." + ipParts[3];
+                }
+
+                return new
+                {
+                    Id = Id,
+                    Content = Content,
+                    OwnerIP = ip,
+                    TimeSpent = TimeSpent,
+                    QuestionId = QuestionId,
+                    Question = Question,
+                    CreatedAt = CreatedAt,
+                    UpdatedAt = UpdatedAt,
+                };
+            }
+        }
     }
 }

@@ -21,7 +21,7 @@ namespace EasyQuestionaire.Migrations
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OwnerIP = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
@@ -35,6 +35,8 @@ namespace EasyQuestionaire.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CompiledCreateForm = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompiledShowForm = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreateFormTSX = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "getdate()"),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -85,7 +87,7 @@ namespace EasyQuestionaire.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "getdate()"),
-                    OnwerIP = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OwnerIP = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     QuestionId = table.Column<int>(type: "int", nullable: false),
                     TimeSpent = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
@@ -115,6 +117,18 @@ namespace EasyQuestionaire.Migrations
                 name: "IX_Question_TypeId",
                 table: "Question",
                 column: "TypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questionaire_Guid",
+                table: "Questionaire",
+                column: "Guid",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questionaire_Title",
+                table: "Questionaire",
+                column: "Title",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_QuestionType_Name",

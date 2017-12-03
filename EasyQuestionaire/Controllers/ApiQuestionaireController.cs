@@ -23,9 +23,30 @@ namespace EasyQuestionaire.Controllers
 
         // GET: api/Questionaire
         [HttpGet]
-        public IEnumerable<Questionaire> GetQuestionaire()
+        public IEnumerable<object> GetQuestionaire()
         {
-            return _context.Questionaire;
+            return _context.Questionaire
+                .OrderByDescending(o => o.UpdatedAt)
+                .Select(o => o.SafeContent);
+        }
+
+        // GET: api/Questionaire/title/Type1
+        [HttpGet("title/{title}")]
+        public async Task<IActionResult> GetQuestionaireTitleError([FromRoute] string title)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var questionaire = await _context.Questionaire.SingleOrDefaultAsync(m => m.Title == title);
+
+            if (questionaire == null)
+            {
+                return Ok("");
+            }
+
+            return Ok("This title has already existed.");
         }
 
         // GET: api/Questionaire/5
@@ -44,9 +65,7 @@ namespace EasyQuestionaire.Controllers
                 return NotFound();
             }
 
-            var ip = questionaire.OwnerIP.Split('.');
-            questionaire.OwnerIP = ip.Length > 0 ? ip[0] + ".*.*.*" : "";
-            return Ok(questionaire);
+            return Ok(questionaire.SafeContent);
         }
 
         // PUT: api/Questionaire/5
@@ -58,12 +77,15 @@ namespace EasyQuestionaire.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != questionaire.Id)
+            if (id != questionaire.Id 
+                && questionaire.Guid != _context.Questionaire.SingleOrDefault(m => m.Id == id).Guid)
             {
                 return BadRequest();
             }
 
+            questionaire.Title = questionaire.Title.Replace('/', '-');
             questionaire.UpdatedAt = DateTime.Now;
+            questionaire.OwnerIP = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
             _context.Entry(questionaire).State = EntityState.Modified;
 
@@ -87,6 +109,8 @@ namespace EasyQuestionaire.Controllers
         }
 
         // POST: api/Questionaire
+        // Only way to return GUID. Users have to remember this.
+        // GUID is the only required token to Edit/Delete questionaire.
         [HttpPost]
         public async Task<IActionResult> PostQuestionaire([FromBody] Questionaire questionaire)
         {
@@ -95,7 +119,9 @@ namespace EasyQuestionaire.Controllers
                 return BadRequest(ModelState);
             }
 
+            questionaire.Title = questionaire.Title.Replace('/', '-');
             questionaire.UpdatedAt = DateTime.Now;
+            questionaire.OwnerIP = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
             _context.Questionaire.Add(questionaire);
             await _context.SaveChangesAsync();
@@ -103,16 +129,16 @@ namespace EasyQuestionaire.Controllers
             return CreatedAtAction("GetQuestionaire", new { id = questionaire.Id }, questionaire);
         }
 
-        // DELETE: api/Questionaire/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteQuestionaire([FromRoute] int id)
+        // DELETE: api/Questionaire/5/XXXXXXX
+        [HttpDelete("{id}/{guid}")]
+        public async Task<IActionResult> DeleteQuestionaire([FromRoute] int id, [FromRoute] Guid guid)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var questionaire = await _context.Questionaire.SingleOrDefaultAsync(m => m.Id == id);
+            var questionaire = await _context.Questionaire.SingleOrDefaultAsync(m => m.Id == id && m.Guid == guid);
             if (questionaire == null)
             {
                 return NotFound();
@@ -127,6 +153,11 @@ namespace EasyQuestionaire.Controllers
         private bool QuestionaireExists(int id)
         {
             return _context.Questionaire.Any(e => e.Id == id);
+        }
+
+        private bool QuestionaireExists(Guid guid)
+        {
+            return _context.Questionaire.Any(e => e.Guid == guid);
         }
     }
 }

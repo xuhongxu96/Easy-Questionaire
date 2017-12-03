@@ -15,7 +15,8 @@ namespace EasyQuestionaire.Models
         [Required]
         public string Description { get; set; }
         public string OwnerIP { get; set; }
-        public Guid Guid { get; set; } = Guid.NewGuid();
+
+        public Guid Guid { get; private set; } = Guid.NewGuid();
 
         [Required]
         public DateTime StartDate { get; set; }
@@ -36,5 +37,32 @@ namespace EasyQuestionaire.Models
         public DateTimeOffset UpdatedAt { get; set; }
 
         public ICollection<Question> Questions { get; set; }
+
+        [NotMapped]
+        public object SafeContent
+        {
+            get
+            {
+                var ip = "*.*.*.*";
+                var ipParts = OwnerIP.Split('.');
+                if (ipParts.Length == 4)
+                {
+                    ip = ipParts[0] + ".*.*." + ipParts[3];
+                }
+
+                return new
+                {
+                    Id = Id,
+                    Title = Title,
+                    Description = Description,
+                    OwnerIP = ip,
+                    StartDate = StartDate,
+                    EndDate = EndDate,
+                    IsEnabled = IsEnabled,
+                    CreatedAt = CreatedAt,
+                    UpdatedAt = UpdatedAt,
+                };
+            }
+        }
     }
 }

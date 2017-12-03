@@ -4,6 +4,8 @@
     name: string,
     createFormTSX: string,
     showFormTSX: string,
+    compiledCreateForm: string,
+    compiledShowForm: string,
     ownerIP: string,
     createdAt: Date,
     updatedAt: Date,

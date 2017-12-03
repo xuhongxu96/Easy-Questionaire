@@ -13,6 +13,7 @@ import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { ComboBox, IComboBoxOption } from 'office-ui-fabric-react/lib/ComboBox';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react/lib/MessageBar';
+import * as moment from 'moment';
 import { ErrorBar } from '../../parts/ErrorBar';
 import { InfoBar } from '../../parts/InfoBar';
 import { HasFetchComponent } from '../../parts/HasFetchComponent';
@@ -65,7 +66,7 @@ export class QuestionaireList extends HasFetchComponent<IQuestionaireListProps, 
                 name: 'Title',
                 fieldName: 'title',
                 minWidth: 100,
-                maxWidth: 300,
+                maxWidth: 200,
                 isRowHeader: true,
                 isResizable: true,
                 isSorted: false,
@@ -78,8 +79,8 @@ export class QuestionaireList extends HasFetchComponent<IQuestionaireListProps, 
                 key: 'description',
                 name: 'Description',
                 fieldName: 'description',
-                minWidth: 200,
-                maxWidth: 600,
+                minWidth: 150,
+                maxWidth: 300,
                 isRowHeader: false,
                 isResizable: true,
                 isSorted: false,
@@ -89,39 +90,74 @@ export class QuestionaireList extends HasFetchComponent<IQuestionaireListProps, 
                 isPadded: true
             },
             {
-                key: 'startDate',
-                name: 'Start Date',
-                fieldName: 'startDate',
-                minWidth: 50,
+                key: 'status',
+                name: 'Status',
+                fieldName: 'isEnabled',
+                minWidth: 80,
                 maxWidth: 100,
                 isRowHeader: false,
                 isResizable: true,
                 isSorted: false,
                 isSortedDescending: false,
                 onColumnClick: this._onColumnClick,
-                data: 'Date',
-                isPadded: true
+                data: 'string',
+                isPadded: true,
+                onRender: (item: IQuestionaireModel) => {
+                    return (
+                        <span className={'xhx-QuestionaireList-Status ms-fontColor-white ' + (item.isEnabled ? 'ms-bgColor-green' : 'ms-bgColor-red')}>
+                            {item.isEnabled ? 'Available' : 'Stopped'}
+                        </span>
+                    );
+                },
+            },
+            {
+                key: 'startDate',
+                name: 'Start Date',
+                fieldName: 'startDate',
+                minWidth: 100,
+                maxWidth: 150,
+                isRowHeader: false,
+                isResizable: true,
+                isSorted: false,
+                isSortedDescending: false,
+                onColumnClick: this._onColumnClick,
+                data: 'string',
+                isPadded: true,
+                onRender: (item: IQuestionaireModel) => {
+                    return (
+                        <span>
+                            {moment(item.startDate).format('L')}
+                        </span>
+                    );
+                },
             },
             {
                 key: 'endDate',
                 name: 'End Date',
                 fieldName: 'endDate',
-                minWidth: 50,
-                maxWidth: 100,
+                minWidth: 100,
+                maxWidth: 150,
                 isRowHeader: false,
                 isResizable: true,
                 isSorted: false,
                 isSortedDescending: false,
                 onColumnClick: this._onColumnClick,
-                data: 'Date',
-                isPadded: true
+                data: 'string',
+                isPadded: true,
+                onRender: (item: IQuestionaireModel) => {
+                    return (
+                        <span>
+                            {moment(item.endDate).format('L')}
+                        </span>
+                    );
+                },
             },
             {
                 key: 'updatedAt',
                 name: 'Updated At',
                 fieldName: 'updatedAt',
-                minWidth: 50,
-                maxWidth: 100,
+                minWidth: 100,
+                maxWidth: 150,
                 isRowHeader: false,
                 isResizable: true,
                 isSorted: true,
@@ -141,8 +177,8 @@ export class QuestionaireList extends HasFetchComponent<IQuestionaireListProps, 
                 key: 'createdAt',
                 name: 'Created At',
                 fieldName: 'createdAt',
-                minWidth: 50,
-                maxWidth: 100,
+                minWidth: 100,
+                maxWidth: 150,
                 isRowHeader: false,
                 isResizable: true,
                 isSorted: false,
@@ -257,8 +293,9 @@ export class QuestionaireList extends HasFetchComponent<IQuestionaireListProps, 
         const isLoading = this.state.isLoading;
         const rawItems = this.state.items;
         const items = rawItems.filter(item =>
-            item.name.toLowerCase().indexOf(filterText.toLowerCase()) >= 0
-            && item.isEnabled == filterEnabled);
+            (item.title.toLowerCase().indexOf(filterText.toLowerCase()) >= 0
+            || item.description.toLowerCase().indexOf(filterText.toLowerCase()) >= 0)
+            && (filterEnabled == undefined || item.isEnabled == filterEnabled));
 
 
         return (

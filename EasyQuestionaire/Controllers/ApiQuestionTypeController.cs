@@ -22,14 +22,16 @@ namespace EasyQuestionaire.Controllers
             _context = context;
         }
 
-        // GET: api/ApiQuestionType
+        // GET: api/QuestionType
         [HttpGet]
-        public IEnumerable<QuestionType> GetQuestionType()
+        public IEnumerable<object> GetQuestionType()
         {
-            return _context.QuestionType.OrderByDescending(o => o.UpdatedAt);
+            return _context.QuestionType
+                .OrderByDescending(o => o.UpdatedAt)
+                .Select(o => o.SafeContent);
         }
 
-        // GET: api/ApiQuestionType/name/Type1
+        // GET: api/QuestionType/name/Type1
         [HttpGet("name/{name}")]
         public async Task<IActionResult> GetQuestionTypeNameError([FromRoute] string name)
         {
@@ -48,7 +50,7 @@ namespace EasyQuestionaire.Controllers
             return Ok("This name has already existed.");
         }
 
-        // GET: api/ApiQuestionType/5
+        // GET: api/QuestionType/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetQuestionType([FromRoute] int id)
         {
@@ -64,48 +66,10 @@ namespace EasyQuestionaire.Controllers
                 return NotFound();
             }
 
-            var ip = questionType.OwnerIP.Split('.');
-            questionType.OwnerIP = ip.Length > 0 ? ip[0] + ".*.*.*" : "";
-            return Ok(questionType);
+            return Ok(questionType.SafeContent);
         }
 
-        // PUT: api/ApiQuestionType/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutQuestionType([FromRoute] int id, [FromBody] QuestionType questionType)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != questionType.Id)
-            {
-                return BadRequest();
-            }
-
-            questionType.UpdatedAt = DateTime.Now;
-            _context.Entry(questionType).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!QuestionTypeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/ApiQuestionType
+        // POST: api/QuestionType
         [HttpPost]
         public async Task<IActionResult> PostQuestionType([FromBody] QuestionType questionType)
         {
@@ -121,28 +85,7 @@ namespace EasyQuestionaire.Controllers
             _context.QuestionType.Add(questionType);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetQuestionType", new { id = questionType.Id }, questionType);
-        }
-
-        // DELETE: api/ApiQuestionType/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteQuestionType([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var questionType = await _context.QuestionType.SingleOrDefaultAsync(m => m.Id == id);
-            if (questionType == null)
-            {
-                return NotFound();
-            }
-
-            _context.QuestionType.Remove(questionType);
-            await _context.SaveChangesAsync();
-
-            return Ok(questionType);
+            return CreatedAtAction("GetQuestionType", new { id = questionType.Id }, questionType.SafeContent);
         }
 
         private bool QuestionTypeExists(int id)
