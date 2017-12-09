@@ -201,6 +201,9 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
     }
 
     private _initEditor() {
+
+        const model = this.state.model;
+
         monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
             declaration: false,
             target: monaco.languages.typescript.ScriptTarget.ES5,
@@ -226,11 +229,11 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
         });
 
         if (!this._createFormEditorModel) {
-            this._createFormEditorModel = monaco.editor.createModel(this._templateCode, 'typescript', monaco.Uri.parse('file:///create.tsx'))
+            this._createFormEditorModel = monaco.editor.createModel(model.createFormTSX, 'typescript', monaco.Uri.parse('file:///create.tsx'))
         }
 
         if (!this._showFormEditorModel) {
-            this._showFormEditorModel = monaco.editor.createModel(this._templateCode, 'typescript', monaco.Uri.parse('file:///show.tsx'))
+            this._showFormEditorModel = monaco.editor.createModel(model.showFormTSX, 'typescript', monaco.Uri.parse('file:///show.tsx'))
         }
     }
 

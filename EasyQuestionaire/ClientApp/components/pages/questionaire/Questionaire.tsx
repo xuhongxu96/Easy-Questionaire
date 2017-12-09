@@ -4,7 +4,7 @@ import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { ComboBox, IComboBoxOption } from 'office-ui-fabric-react/lib/ComboBox';
 import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
 import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
-import { TwoLevelBreadcrumb } from '../../parts/TwoLevelBreadcrumb';
+import { ThreeLevelBreadcrumb } from '../../parts/ThreeLevelBreadcrumb';
 import { QuestionaireList } from '../../parts/questionaire/QuestionaireList';
 import { Selection } from 'office-ui-fabric-react/lib/DetailsList';
 import { IQuestionaireModel } from '../../../models/IQuestionaireModel';
@@ -138,7 +138,7 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
         ];
 
         return <div className='xhx-Page xhx-Questionaire'>
-            <TwoLevelBreadcrumb title='Questionaire' />
+            <ThreeLevelBreadcrumb title='Questionaire' />
 
             <CommandBar
                 ref={this._onBindSearchBox}

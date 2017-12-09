@@ -24,6 +24,7 @@ export interface IQuestionaireFormError {
 export interface IQuestionaireFormProps {
     isOnlyView?: boolean,
     model?: IQuestionaireModel,
+    onSubmitted?: (id: number) => void,
 }
 
 export interface IQuestionaireFormState {
@@ -89,7 +90,9 @@ export class QuestionaireForm extends HasFetchComponent<IQuestionaireFormProps, 
             .then(response => {
                 if (response.ok) {
                     alert("Successfully created.");
-                    // TODO: Next
+                    (response.json() as Promise<IQuestionaireModel>).then(data => {
+                        this.props.onSubmitted && this.props.onSubmitted(data.id);
+                    });
                     return {};
                 } else {
                     return response.json() as Promise<IQuestionaireFormError>

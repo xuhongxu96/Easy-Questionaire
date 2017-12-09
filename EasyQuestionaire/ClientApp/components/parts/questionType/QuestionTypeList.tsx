@@ -59,7 +59,14 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
                 isSortedDescending: false,
                 onColumnClick: this._onColumnClick,
                 data: 'string',
-                isPadded: true
+                isPadded: true,
+                onRender: (item: IQuestionTypeModel) => {
+                    return (
+                        <a href={'/questionType/view/' + item.id}>
+                            {item.name}
+                        </a>
+                    );
+                },
             },
             {
                 key: 'updatedAt',

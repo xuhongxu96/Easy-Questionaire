@@ -34,13 +34,9 @@ export class DynamicQuestionTypeComponent
                 let requireComponent = eval(`(function (exports, React) {` + code + `})`);
                 let context: any = {};
                 requireComponent(context, React);
-                this.setState({ component: context.ExampleQuestionType });
+                this.setStateWhenMount({ component: context.ExampleQuestionType });
             })
             .catch(error => console.log(error));
-    }
-
-    componentWillUnmount() {
-        super.componentWillUnmount();
     }
 
     render() {

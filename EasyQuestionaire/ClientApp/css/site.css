@@ -72,7 +72,7 @@
         }
 }
 
-.xhx-TwoLevelBreadcrumb {
+.xhx-ThreeLevelBreadcrumb {
     margin-bottom: 32px !important;
 }
 
@@ -87,4 +87,20 @@
 
 .xhx-QuestionaireList-Status {
     padding: 4px;
+}
+
+.xhx-QuestionItem {
+    margin: 16px;
+}
+
+.xhx-QuestionItem-Content {
+    border: solid 1px #888;
+    padding: 16px;
+}
+
+.xhx-CommandBarButton-Container {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    height: 32px;
 }

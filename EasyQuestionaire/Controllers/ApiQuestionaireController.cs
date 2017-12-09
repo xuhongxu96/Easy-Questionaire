@@ -68,6 +68,27 @@ namespace EasyQuestionaire.Controllers
             return Ok(questionaire.SafeContent);
         }
 
+        // GET: api/Questionaire/questions/5
+        [HttpGet("questions/{id}")]
+        public async Task<IActionResult> GetQuestionaireQuestions([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var questionaire = await _context.Questionaire.SingleOrDefaultAsync(m => m.Id == id);
+
+            if (questionaire == null)
+            {
+                return NotFound();
+            }
+
+            await _context.Entry(questionaire).Collection(q => q.Questions).LoadAsync();
+
+            return Ok(questionaire.Questions);
+        }
+
         // PUT: api/Questionaire/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutQuestionaire([FromRoute] int id, [FromBody] Questionaire questionaire)

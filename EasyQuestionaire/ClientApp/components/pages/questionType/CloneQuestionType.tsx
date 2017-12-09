@@ -2,7 +2,7 @@
 import { RouteComponentProps } from 'react-router';
 import { Breadcrumb } from 'office-ui-fabric-react/lib/Breadcrumb';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react/lib/MessageBar';
-import { TwoLevelBreadcrumb } from '../../parts/TwoLevelBreadcrumb';
+import { ThreeLevelBreadcrumb } from '../../parts/ThreeLevelBreadcrumb';
 import { QuestionTypeForm } from '../../parts/questionType/QuestionTypeForm';
 import { IQuestionTypeModel } from '../../../models/IQuestionTypeModel';
 import { ErrorBar } from '../../parts/ErrorBar';
@@ -27,7 +27,7 @@ export class CloneQuestionType extends HasFetchComponent<RouteComponentProps<{ i
         }
     }
 
-    private _loadModel() {
+    private _fetchModel() {
         const id = this.props.match.params.id;
         fetch('api/questionType/' + id)
             .then(response => response.json() as Promise<IQuestionTypeModel>)
@@ -37,7 +37,7 @@ export class CloneQuestionType extends HasFetchComponent<RouteComponentProps<{ i
 
     public componentDidMount() {
         super.componentDidMount();
-        this._loadModel();
+        this._fetchModel();
     }
 
     public render() {
@@ -45,7 +45,7 @@ export class CloneQuestionType extends HasFetchComponent<RouteComponentProps<{ i
         const isLoading = this.state.isLoading;
         const errorText = this.state.errorText;
         const srcModel = this.state.srcModel;
-        const cloneName = srcModel ? srcModel.name : this.props.match.params.id;
+        const cloneName = srcModel ? srcModel.name : this.props.match.params.id.toString();
 
         const newModel = srcModel ? {
             ...srcModel,
@@ -53,7 +53,7 @@ export class CloneQuestionType extends HasFetchComponent<RouteComponentProps<{ i
         } : null;
 
         return (<div className='xhx-CloneQuestionType'>
-            <TwoLevelBreadcrumb title='Question Type' subtitle={'Clone: ' + cloneName} history={this.props.history} url='/questionType' />
+            <ThreeLevelBreadcrumb title='Question Type' subtitle='Clone' subsubtitle={cloneName} history={this.props.history} url='/questionType' />
 
             <ErrorBar
                 errorText={errorText}

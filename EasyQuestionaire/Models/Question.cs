@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,10 +14,12 @@ namespace EasyQuestionaire.Models
 
         [Required]
         public int QuestionaireId { get; set; }
+        [JsonIgnore]
         public Questionaire Questionaire { get; set; }
 
         [Required]
         public int TypeId { get; set; }
+        [JsonIgnore]
         public QuestionType Type { get; set; }
 
         [Required]

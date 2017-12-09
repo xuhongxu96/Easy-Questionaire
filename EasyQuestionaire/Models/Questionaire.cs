@@ -36,7 +36,7 @@ namespace EasyQuestionaire.Models
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
 
-        public ICollection<Question> Questions { get; set; }
+        public ICollection<Question> Questions { get; set; } = new List<Question>();
 
         [NotMapped]
         public object SafeContent

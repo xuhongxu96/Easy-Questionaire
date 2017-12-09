@@ -7,7 +7,7 @@ import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
 import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { Selection } from 'office-ui-fabric-react/lib/DetailsList';
 
-import { TwoLevelBreadcrumb } from '../../parts/TwoLevelBreadcrumb';
+import { ThreeLevelBreadcrumb } from '../../parts/ThreeLevelBreadcrumb';
 import { IQuestionTypeModel } from '../../../models/IQuestionTypeModel';
 
 export interface IQuestionTypeState {
@@ -102,7 +102,7 @@ export class QuestionType extends React.Component<RouteComponentProps<{}>, IQues
 
         return <div className='xhx-QuestionType'>
 
-            <TwoLevelBreadcrumb title='Question Type' />
+            <ThreeLevelBreadcrumb title='Question Type' />
 
             <CommandBar
                 ref={this._onBindSearchBox}

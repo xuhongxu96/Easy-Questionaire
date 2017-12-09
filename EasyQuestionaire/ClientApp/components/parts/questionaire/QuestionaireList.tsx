@@ -209,7 +209,7 @@ export class QuestionaireList extends HasFetchComponent<IQuestionaireListProps, 
         this.props.onSelected(this._selection);
     }
 
-    private _loadItems() {
+    private _fetchItems() {
         fetch('api/Questionaire/')
             .then(response => response.json() as Promise<IQuestionaireModel[]>)
             .then(data => {
@@ -277,7 +277,7 @@ export class QuestionaireList extends HasFetchComponent<IQuestionaireListProps, 
 
     public componentDidMount() {
         super.componentDidMount();
-        this._loadItems();
+        this._fetchItems();
     }
 
     public componentWillUnmount() {

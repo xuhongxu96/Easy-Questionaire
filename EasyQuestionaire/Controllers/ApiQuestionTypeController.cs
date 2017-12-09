@@ -28,7 +28,12 @@ namespace EasyQuestionaire.Controllers
         {
             return _context.QuestionType
                 .OrderByDescending(o => o.UpdatedAt)
-                .Select(o => o.SafeContent);
+                .Select(o => new {
+                    Id = o.Id,
+                    Name = o.Name,
+                    CreatedAt = o.CreatedAt,
+                    UpdatedAt = o.UpdatedAt,
+                });
         }
 
         // GET: api/QuestionType/name/Type1
