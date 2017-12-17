@@ -69,7 +69,7 @@ interface IShowQuestionTypeComponentProps {
 	- [x] Add Question
 	- [x] Remove Question
 	- [x] Re-order Question
-	- [ ] Save questions
-- [ ] Questionaire Editing Form
+	- [x] Save questions
+- [x] Questionaire Editing Form
 - [ ] Questionaire Filling Form
 - [ ] Questionaire Report
