@@ -65,7 +65,7 @@ interface IShowQuestionTypeComponentProps {
 - [x] Question Type Creating and Editing Form
 - [x] Questionaire List
 - [x] Questionaire Creating Form
-- [ ] Questionaire Question Editor
+- [x] Questionaire Question Editor
 	- [x] Add Question
 	- [x] Remove Question
 	- [x] Re-order Question
