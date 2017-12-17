@@ -68,6 +68,30 @@ namespace EasyQuestionaire.Controllers
             return Ok(questionaire.SafeContent);
         }
 
+        // GET: api/Questionaire/check/5/xxx-xxx
+        [HttpGet("check/{id}/{guid}")]
+        public async Task<IActionResult> GetCheckQuestionaire([FromRoute] int id, [FromRoute] Guid guid)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { guid = "Not a Valid Guid." });
+            }
+
+            var questionaire = await _context.Questionaire.SingleOrDefaultAsync(m => m.Id == id);
+
+            if (questionaire == null)
+            {
+                return NotFound();
+            }
+
+            if (questionaire.Guid != guid)
+            {
+                return BadRequest(new { guid = "Wrong Guid." });
+            }
+
+            return Ok(new { });
+        }
+
         // GET: api/Questionaire/questions/5
         [HttpGet("questions/{id}")]
         public async Task<IActionResult> GetQuestionaireQuestions([FromRoute] int id)
@@ -89,26 +113,37 @@ namespace EasyQuestionaire.Controllers
             return Ok(questionaire.Questions);
         }
 
-        // PUT: api/Questionaire/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutQuestionaire([FromRoute] int id, [FromBody] Questionaire questionaire)
+        // PUT: api/Questionaire/5/xxx-xxx
+        [HttpPut("{id}/{guid}")]
+        public async Task<IActionResult> PutQuestionaire([FromRoute] int id, [FromRoute] Guid guid, [FromBody] Questionaire questionaire)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != questionaire.Id 
-                && questionaire.Guid != _context.Questionaire.SingleOrDefault(m => m.Id == id).Guid)
+            var rawQuestionaire = _context.Questionaire.SingleOrDefault(m => m.Id == id);
+
+            if (id != questionaire.Id)
             {
-                return BadRequest();
+                return BadRequest(new { });
+            }
+            if (guid != rawQuestionaire.Guid)
+            {
+                return BadRequest(new
+                {
+                    guid = $"Wrong Guid: {guid}."
+                });
             }
 
-            questionaire.Title = questionaire.Title.Replace('/', '-');
-            questionaire.UpdatedAt = DateTime.Now;
-            questionaire.OwnerIP = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            rawQuestionaire.Description = questionaire.Description;
+            rawQuestionaire.StartDate = questionaire.StartDate;
+            rawQuestionaire.EndDate = questionaire.EndDate;
+            rawQuestionaire.Title = questionaire.Title.Replace('/', '-');
+            rawQuestionaire.UpdatedAt = DateTime.Now;
+            rawQuestionaire.OwnerIP = Request.HttpContext.Connection.RemoteIpAddress.ToString();
 
-            _context.Entry(questionaire).State = EntityState.Modified;
+            _context.Entry(rawQuestionaire).State = EntityState.Modified;
 
             try
             {
@@ -126,7 +161,7 @@ namespace EasyQuestionaire.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(rawQuestionaire);
         }
 
         // POST: api/Questionaire
@@ -147,7 +182,7 @@ namespace EasyQuestionaire.Controllers
             _context.Questionaire.Add(questionaire);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetQuestionaire", new { id = questionaire.Id }, questionaire);
+            return Ok(questionaire);
         }
 
         // DELETE: api/Questionaire/5/XXXXXXX

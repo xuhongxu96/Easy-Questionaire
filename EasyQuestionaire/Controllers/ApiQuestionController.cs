@@ -10,6 +10,12 @@ using EasyQuestionaire.Models;
 
 namespace EasyQuestionaire.Controllers
 {
+    public struct QuestionContent
+    {
+        public int ID { get; set; }
+        public string Content { get; set; }
+    }
+
     [Produces("application/json")]
     [Route("api/Question")]
     public class ApiQuestionController : Controller
@@ -42,17 +48,14 @@ namespace EasyQuestionaire.Controllers
 
         // PUT: api/Question/5/xxx-xxx
         [HttpPut("{id}/{guid}")]
-        public async Task<IActionResult> PutQuestion([FromRoute] int id, [FromRoute] Guid guid, [FromBody] Question question)
+        public async Task<IActionResult> PutQuestionContent([FromRoute] int id, [FromRoute] Guid guid, [FromBody] QuestionContent content)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != question.Id)
-            {
-                return BadRequest();
-            }
+            var question = await _context.Question.SingleOrDefaultAsync(m => m.Id == id);
 
             await _context.Entry(question).Reference(o => o.Questionaire).LoadAsync();
             if (question.Questionaire.Guid != guid)
@@ -63,6 +66,7 @@ namespace EasyQuestionaire.Controllers
                 });
             }
 
+            question.Content = content.Content;
             question.UpdatedAt = DateTime.Now;
             _context.Entry(question).State = EntityState.Modified;
 
@@ -82,7 +86,7 @@ namespace EasyQuestionaire.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(new {});
         }
 
         // GET: api/Question/move/5/2/xxx-xxx
@@ -221,6 +225,45 @@ namespace EasyQuestionaire.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(question);
+        }
+
+        // PUT: api/Question/saveAll/xxx-xxx
+        [HttpPut("saveAll/{guid}")]
+        public async Task<IActionResult> PutAllQuestionContent([FromRoute] Guid guid, [FromBody] List<QuestionContent> contentList)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            foreach (var content in contentList)
+            {
+                var question = await _context.Question.SingleOrDefaultAsync(m => m.Id == content.ID);
+
+                await _context.Entry(question).Reference(o => o.Questionaire).LoadAsync();
+                if (question.Questionaire.Guid != guid)
+                {
+                    return BadRequest(new
+                    {
+                        guid = $"Wrong Guid: {guid}."
+                    });
+                }
+
+                question.Content = content.Content;
+                question.UpdatedAt = DateTime.Now;
+                _context.Entry(question).State = EntityState.Modified;
+            }
+           
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(new { });
         }
 
         private bool QuestionExists(int id)

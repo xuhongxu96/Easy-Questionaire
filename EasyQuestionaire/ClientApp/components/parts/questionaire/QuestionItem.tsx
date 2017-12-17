@@ -6,7 +6,10 @@ import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { IQuestionaireModel } from '../../../models/IQuestionaireModel';
 import { IQuestionModel } from '../../../models/IQuestionModel';
 import { HasFetchComponent } from '../HasFetchComponent';
-import { DynamicQuestionTypeComponent } from '../questionType/DynamicQuestionTypeComponent'
+import {
+    DynamicQuestionTypeComponent,
+    ICreateQuestionTypeComponentProps
+} from '../questionType/DynamicQuestionTypeComponent'
 import { ErrorBar } from '../ErrorBar';
 import { InfoBar } from '../InfoBar';
 
@@ -15,19 +18,49 @@ export interface IQuestionItemProps {
     questions: IQuestionModel[],
     onRemove: (index: number) => void,
     onInsert: (index: number) => void,
-    onMove: (index:number, target: number) => void,
+    onMove: (index: number, target: number) => void,
+    onChanged: (index: number, content: string) => void,
 }
 
-export class QuestionItem extends React.Component<IQuestionItemProps, {}> {
+export interface IQuestionItemState {
+    componentContent: string,
+}
+
+export class QuestionItem extends React.Component<IQuestionItemProps, IQuestionItemState> {
+
+    private _isChanged = false;
 
     constructor(props: IQuestionItemProps) {
         super(props);
+
+        this._onContentChanged = this._onContentChanged.bind(this);
+
+        this.state = {
+            componentContent: this.props.question.content,
+        }
+    }
+
+    private _onContentChanged(content: string) {
+        this._isChanged = true;
+
+        const question = this.props.question;
+        this.props.onChanged(question.order, content);
+
+        this.setState({
+            componentContent: content,
+        });
     }
 
     render() {
 
         const question = this.props.question;
         const questions = this.props.questions;
+        const componentProps: ICreateQuestionTypeComponentProps = {
+            question: question,
+            questions: questions,
+            content: this.state.componentContent,
+            onContentChanged: this._onContentChanged,
+        };
 
         return (
             <div className='xhx-QuestionItem'>
@@ -54,6 +87,7 @@ export class QuestionItem extends React.Component<IQuestionItemProps, {}> {
                     <DynamicQuestionTypeComponent
                         questionTypeId={question.typeId}
                         formType='create'
+                        componentProps={componentProps}
                     />
 
                 </div>

@@ -6,7 +6,8 @@
     startDate: Date,
     endDate: Date,
     isEnabled: boolean,
-    ownerIP: string
+    ownerIP: string,
+    guid?: string,
     createdAt: Date,
     updatedAt: Date,
 }

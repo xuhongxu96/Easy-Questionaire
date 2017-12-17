@@ -2,6 +2,9 @@
 import { RouteComponentProps } from 'react-router';
 import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
 import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
+import { Label } from 'office-ui-fabric-react/lib/Label';
+import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
+import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { ThreeLevelBreadcrumb } from '../../parts/ThreeLevelBreadcrumb';
 import { IQuestionaireModel } from '../../../models/IQuestionaireModel';
 import { HasFetchComponent } from '../../parts/HasFetchComponent';
@@ -53,6 +56,8 @@ export class EditQuestion extends HasFetchComponent<RouteComponentProps<IEditQue
         const model = this.state.model;
         const modelTitle = model ? model.title : this.props.match.params.id.toString();
 
+        const guid = this.props.match.params.guid;
+
         return (<div className='xhx-Page xhx-EditQuestion'>
             <ThreeLevelBreadcrumb title='Questionaire' subtitle='Edit Questions' subsubtitle={modelTitle} history={this.props.history} url='/questionaire' />
 
@@ -61,12 +66,25 @@ export class EditQuestion extends HasFetchComponent<RouteComponentProps<IEditQue
                 onDismiss={() => this.setState({ errorText: '' })}
             />
 
+            <Label>Please Always <span style={{ color: 'red' }}>Remember and Keep Secret</span> the GUID of Your Questionaire (which gives you edit permission): </Label>
+            <TextField
+                value={guid}
+                underlined
+                readOnly={true}
+            />
+
+            <hr />
+
             {model && <QuestionEditor
                 model={model}
-                guid={this.props.match.params.guid}
-            />}
+                guid={guid}
+                onFinished={() => {
+                    this.props.history.push('/questionaire');
+                }}
+            />
+            }
 
-        </div>);
+        </div >);
     }
 
 

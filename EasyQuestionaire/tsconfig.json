@@ -8,7 +8,9 @@
     "sourceMap": true,
     "skipDefaultLibCheck": true,
     "strict": true,
-    "types": ["webpack-env"]
+    "types": [ "webpack-env" ],
+    "downlevelIteration": true,
+    "lib": ["dom", "es5", "es2015.collection", "es2015.iterable", "es2015"]
   },
   "exclude": [
       "bin",

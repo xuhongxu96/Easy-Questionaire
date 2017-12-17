@@ -168,7 +168,7 @@ export class QuestionaireList extends HasFetchComponent<IQuestionaireListProps, 
                 onRender: (item: IQuestionaireModel) => {
                     return (
                         <span>
-                            {new Date(item.updatedAt).toLocaleString()}
+                            {item.updatedAt.toLocaleString()}
                         </span>
                     );
                 },
@@ -189,7 +189,7 @@ export class QuestionaireList extends HasFetchComponent<IQuestionaireListProps, 
                 onRender: (item: IQuestionaireModel) => {
                     return (
                         <span>
-                            {new Date(item.createdAt).toLocaleString()}
+                            {item.createdAt.toLocaleString()}
                         </span>
                     );
                 },

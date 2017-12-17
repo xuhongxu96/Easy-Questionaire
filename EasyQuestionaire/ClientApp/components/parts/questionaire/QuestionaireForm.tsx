@@ -19,12 +19,14 @@ export interface IQuestionaireFormError {
     StartDate?: string,
     EndDate?: string,
     OwnerIP?: string,
+    guid?: string,
 }
 
 export interface IQuestionaireFormProps {
-    isOnlyView?: boolean,
+    type?: 'create' | 'edit' | 'view',
     model?: IQuestionaireModel,
-    onSubmitted?: (id: number) => void,
+    onSubmitted?: (questionaire: IQuestionaireModel) => void,
+    guid?: string,
 }
 
 export interface IQuestionaireFormState {
@@ -57,9 +59,6 @@ export class QuestionaireForm extends HasFetchComponent<IQuestionaireFormProps, 
         if (this.props.model) {
             initModel = {
                 ...this.props.model,
-                id: 0,
-                ownerIP: '',
-                createdAt: new Date(),
                 updatedAt: new Date(),
             };
         }
@@ -73,25 +72,28 @@ export class QuestionaireForm extends HasFetchComponent<IQuestionaireFormProps, 
 
     private _onSubmit() {
 
-        if (this.props.isOnlyView) return;
+        if (this.props.type == 'view') return;
 
         this.setState({ isSubmitting: true });
 
         const model = this.state.model;
 
-        fetch('api/Questionaire', {
+        const url = this.props.type == 'create' ? 'api/Questionaire' : `api/Questionaire/${model.id}/${this.props.guid}`;
+        const method = this.props.type == 'create' ? 'POST' : 'PUT';
+
+        fetch(url, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            method: 'POST',
+            method: method,
             body: JSON.stringify(model)
         })
             .then(response => {
                 if (response.ok) {
-                    alert("Successfully created.");
+                    alert("Successfully saved.");
                     (response.json() as Promise<IQuestionaireModel>).then(data => {
-                        this.props.onSubmitted && this.props.onSubmitted(data.id);
+                        this.props.onSubmitted && this.props.onSubmitted(data);
                     });
                     return {};
                 } else {
@@ -141,7 +143,7 @@ export class QuestionaireForm extends HasFetchComponent<IQuestionaireFormProps, 
 
     render() {
 
-        const isOnlyView = this.props.isOnlyView;
+        const isOnlyView = this.props.type == 'view';
         const error = this.state.error;
         const { title, description, startDate, endDate } = this.state.model;
 
@@ -149,11 +151,14 @@ export class QuestionaireForm extends HasFetchComponent<IQuestionaireFormProps, 
             <div className='xhx-QuestionaireForm'>
                 <form>
 
+                    {error.guid && <ErrorBar
+                        errorText={error.guid}
+                    />}
                     <TextField
                         label='Title'
                         value={title}
                         readOnly={isOnlyView}
-                        onGetErrorMessage={isOnlyView ? undefined : this._getNameErrorMessagePromise}
+                        onGetErrorMessage={this.props.type == 'create' ? this._getNameErrorMessagePromise : undefined}
                         onChanged={this._onModelChanged.bind(null, 'title')}
                         errorMessage={error.Title}
                     />
@@ -170,14 +175,14 @@ export class QuestionaireForm extends HasFetchComponent<IQuestionaireFormProps, 
 
                     <Label> Start Date </Label>
                     <DatePicker
-                        value={startDate}
+                        value={moment(startDate).toDate()}
                         onSelectDate={this._onModelChanged.bind(null, 'startDate')}
                         placeholder='Please select the start date of this questionaire...'
                     />
 
                     <Label> End Date </Label>
                     <DatePicker
-                        value={endDate}
+                        value={moment(endDate).toDate()}
                         onSelectDate={this._onModelChanged.bind(null, 'endDate')}
                         placeholder='Please select the end date of this questionaire...'
                     />
@@ -185,7 +190,7 @@ export class QuestionaireForm extends HasFetchComponent<IQuestionaireFormProps, 
                     {!isOnlyView && <PrimaryButton
                         className='xhx-LargeButton'
                         onClick={this._onSubmit}
-                    > Save and Next </PrimaryButton>}
+                    > Save and Edit Questions </PrimaryButton>}
 
                 </form>
             </div>

@@ -8,11 +8,14 @@ import { ThreeLevelBreadcrumb } from '../../parts/ThreeLevelBreadcrumb';
 import { QuestionaireList } from '../../parts/questionaire/QuestionaireList';
 import { Selection } from 'office-ui-fabric-react/lib/DetailsList';
 import { IQuestionaireModel } from '../../../models/IQuestionaireModel';
+import { InputGuidDialog } from '../../parts/questionaire/InputGuidDialog';
 
 export interface IQuestionaireState {
     filterText: string,
     filterEnabled: string,
     selectedModel: IQuestionaireModel | null,
+    isInputGuidDialogHidden: boolean,
+    inputGuidDialogErrorText: string,
 }
 
 export class Questionaire extends React.Component<RouteComponentProps<{}>, IQuestionaireState> {
@@ -25,15 +28,19 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
 
     constructor() {
         super();
-        
+
         this._onBindSearchBox = this._onBindSearchBox.bind(this);
         this._onSelected = this._onSelected.bind(this);
         this._onToggleSelect = this._onToggleSelect.bind(this);
+        this._prepareEditQuestionaire = this._prepareEditQuestionaire.bind(this);
+        this._onFinishedInputGuid = this._onFinishedInputGuid.bind(this);
 
         this.state = {
             filterText: '',
             filterEnabled: 'All',
             selectedModel: null,
+            isInputGuidDialogHidden: true,
+            inputGuidDialogErrorText: '',
         }
     }
 
@@ -70,12 +77,47 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
         });
     }
 
+    private _prepareEditQuestionaire() {
+        this.setState({
+            isInputGuidDialogHidden: false,
+            inputGuidDialogErrorText: '',
+        });
+    }
+
+    private _onFinishedInputGuid(guid: string) {
+
+        const selectedModel = this.state.selectedModel;
+
+        fetch(`api/Questionaire/check/${selectedModel ? selectedModel.id : ''}/${guid}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data['guid']) {
+                    this.setState({
+                        inputGuidDialogErrorText: data['guid'],
+                    });
+                } else {
+                    this.setState({
+                        isInputGuidDialogHidden: true,
+                        inputGuidDialogErrorText: '',
+                    });
+
+                    this.props.history.push(`questionaire/edit/${selectedModel ? selectedModel.id : ''}/${guid}`);
+                }
+            })
+            .catch(error => this.setState({
+                inputGuidDialogErrorText: error,
+            }));
+
+
+    }
 
     public render() {
 
         const filterText = this.state.filterText;
         const filterEnabled = this.state.filterEnabled;
         const selectedModel = this.state.selectedModel;
+        const isDialogHidden = this.state.isInputGuidDialogHidden;
+        const dialogErrorText = this.state.inputGuidDialogErrorText;
 
         const commands: IContextualMenuItem[] = [
             {
@@ -99,7 +141,7 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
                 icon: 'Edit',
                 className: 'ms-CommandBarItem',
                 disabled: selectedModel == null,
-                onClick: () => this.props.history.push('questionaire/edit/' + (selectedModel ? selectedModel.id : '')),
+                onClick: this._prepareEditQuestionaire,
             },
         ];
 
@@ -114,7 +156,7 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
                         {
                             key: 'All',
                             name: 'All',
-                            canCheck: true, 
+                            canCheck: true,
                             isChecked: filterEnabled == 'All',
                             onClick: this._onToggleSelect,
                         },
@@ -139,6 +181,13 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
 
         return <div className='xhx-Page xhx-Questionaire'>
             <ThreeLevelBreadcrumb title='Questionaire' />
+
+            <InputGuidDialog
+                hidden={isDialogHidden}
+                onDismiss={() => this.setState({ isInputGuidDialogHidden: true })}
+                onConfirm={this._onFinishedInputGuid}
+                errorText={dialogErrorText}
+            />
 
             <CommandBar
                 ref={this._onBindSearchBox}

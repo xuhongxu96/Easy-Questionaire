@@ -36,15 +36,29 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
 
     private _createFormEditorModel: any = null;
     private _showFormEditorModel: any = null;
-    private _libDisposable: any = null;
+    private _libDisposable: any[] = [];
 
-    private _templateCode = `export class ExampleQuestionType extends React.Component<{}, {}> {
-    constructor() {
-        super();
+    private _templateCreateCode = `export class ExampleQuestionType extends React.Component<ICreateQuestionTypeComponentProps, {}> {
+    constructor(props: ICreateQuestionTypeComponentProps) {
+        super(props);
     }
 
     public render() {
-        return <div>Hello, World!</div>;
+        return (
+            <div>Hello, World!</div>
+        );
+    }
+}`;
+
+    private _templateShowCode = `export class ExampleQuestionType extends React.Component<IShowQuestionTypeComponentProps, {}> {
+    constructor(props: IShowQuestionTypeComponentProps) {
+        super(props);
+    }
+
+    public render() {
+        return (
+            <div>Hello, World!</div>
+        );
     }
 }`;
 
@@ -61,8 +75,8 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
         let cloneModel: IQuestionTypeModel = {
             id: 0,
             name: '',
-            createFormTSX: this._templateCode,
-            showFormTSX: this._templateCode,
+            createFormTSX: this._templateCreateCode,
+            showFormTSX: this._templateShowCode,
             compiledCreateForm: '',
             compiledShowForm: '',
             ownerIP: '',
@@ -176,7 +190,7 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
                                                         })
                                                             .then(response => {
                                                                 if (response.ok) {
-                                                                    alert("Successfully created.");
+                                                                    alert("Successfully saved.");
                                                                     history.back();
                                                                     return {};
                                                                 } else {
@@ -218,8 +232,34 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
             .then(response => response.text())
             .then(data => data.replace(`export = React;`, ``))
             .then(data => {
-                if (!this._libDisposable) {
-                    this._libDisposable = monaco.languages.typescript.typescriptDefaults.addExtraLib(data, 'dist/monaco/@types/react/index.d.ts');
+                if (this._libDisposable.length == 0) {
+                    this._libDisposable.push(monaco.languages.typescript.typescriptDefaults.addExtraLib(`
+declare interface IQuestionModel {
+    [key: string]: any,
+    id: number,
+    questionaireId: number,
+    typeId: number,
+    order: number,
+    content: string,
+    createdAt: Date,
+    updatedAt: Date,
+}
+declare interface ICreateQuestionTypeComponentProps {
+    question: IQuestionModel,
+    questions: IQuestionModel[],
+    content: string, // save settings in [content]
+    onContentChanged: (content: string) => void,
+}
+declare interface IShowQuestionTypeComponentProps {
+    question: IQuestionModel,
+    questions: IQuestionModel[],
+    // answers: IAnswerModel[],
+    createContent: string, // [ICreateQuestionTypeComponentProps.content] settings of the component
+    content: string, // save answer in [content]
+    onSubmit: (content: string, nextQuestionIndex?: number) => void,
+}
+`, 'dist/monaco/@types/questionTypeInterfaces/index.d.ts'))
+                    this._libDisposable.push(monaco.languages.typescript.typescriptDefaults.addExtraLib(data, 'dist/monaco/@types/react/index.d.ts'));
                 }
             });
 
@@ -240,9 +280,11 @@ export class QuestionTypeForm extends HasFetchComponent<IQuestionTypeFormProps, 
     componentWillUnmount() {
         super.componentWillUnmount();
 
-        if (this._libDisposable) {
-            this._libDisposable.dispose();
-            this._libDisposable = null;
+        if (this._libDisposable.length > 0) {
+            for (let lib of this._libDisposable) {
+                lib.dispose();
+            }
+            this._libDisposable = [];
         }
 
         if (this._createFormEditorModel) {

@@ -13,14 +13,17 @@
     <None Remove="ClientApp\components\pages\Questionaire.tsx" />
     <None Remove="ClientApp\components\pages\questionaire\CreateQuestionaire.tsx" />
     <None Remove="ClientApp\components\pages\questionaire\EditQuestion.tsx" />
+    <None Remove="ClientApp\components\pages\questionaire\EditQuestionaire.tsx" />
     <None Remove="ClientApp\components\pages\questionType\CreateQuestionType.tsx" />
     <None Remove="ClientApp\components\parts\ErrorBar.tsx" />
     <None Remove="ClientApp\components\parts\HasFetchComponent.tsx" />
     <None Remove="ClientApp\components\parts\InfoBar.tsx" />
+    <None Remove="ClientApp\components\parts\questionaire\InputGuidDialog.tsx" />
     <None Remove="ClientApp\components\parts\questionaire\QuestionaireForm.tsx" />
     <None Remove="ClientApp\components\parts\questionaire\QuestionEditor.tsx" />
     <None Remove="ClientApp\components\parts\questionType\DynamicQuestionTypeComponent.tsx" />
     <None Remove="ClientApp\components\parts\questionType\SelectQuestionTypeDialog.tsx" />
+    <None Remove="ClientApp\components\parts\StatusBar.tsx" />
     <None Remove="ClientApp\models\IQuestionModel.ts" />
     <None Remove="ClientApp\models\IQuestionTypeModel.ts" />
   </ItemGroup>
@@ -38,18 +41,21 @@
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\components\pages\questionaire\CreateQuestionaire.tsx" />
     <TypeScriptCompile Include="ClientApp\components\pages\questionaire\EditQuestion.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\pages\questionaire\EditQuestionaire.tsx" />
     <TypeScriptCompile Include="ClientApp\components\pages\questionType\ViewQuestionType.tsx" />
     <TypeScriptCompile Include="ClientApp\components\pages\questionType\CloneQuestionType.tsx" />
     <TypeScriptCompile Include="ClientApp\components\pages\questionType\CreateQuestionType.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\ErrorBar.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\HasFetchComponent.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\InfoBar.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\parts\questionaire\InputGuidDialog.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionaire\QuestionaireForm.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionaire\QuestionEditor.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionaire\QuestionItem.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionType\DynamicQuestionTypeComponent.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionType\QuestionTypeForm.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionType\SelectQuestionTypeDialog.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\parts\StatusBar.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\ThreeLevelBreadcrumb.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionType\QuestionTypeList.tsx" />
     <TypeScriptCompile Include="ClientApp\models\IQuestionaireModel.ts" />

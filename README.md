@@ -18,7 +18,7 @@ Feel free to answer questionaire.
 
 ### Guid for Editing Questionaire
 
-To avoid your questionaire being destroyed by others, Easy Questionaire use the unique Guid to identify your permision to the questionaire.
+To avoid your questionaire being destroyed by others, Easy Questionaire use the unique Guid to identify your permission to the questionaire.
 
 Only if you provide the right Guid for the questionaire, you are allowed to edit it.
 

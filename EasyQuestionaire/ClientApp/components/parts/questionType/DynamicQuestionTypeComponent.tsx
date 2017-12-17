@@ -2,11 +2,30 @@
 import * as ReactDOM from 'react-dom';
 import { HasFetchComponent } from '../../parts/HasFetchComponent';
 import { InfoBar } from '../../parts/InfoBar';
+import { IQuestionModel } from '../../../models/IQuestionModel';
+// import { IAnswerModel } from '../../../models/IAnswerModel';
 import { IQuestionTypeModel } from '../../../models/IQuestionTypeModel';
+
+export interface ICreateQuestionTypeComponentProps {
+    question: IQuestionModel,
+    questions: IQuestionModel[],
+    content: string, // save settings in [content]
+    onContentChanged: (content: string) => void,
+}
+
+export interface IShowQuestionTypeComponentProps {
+    question: IQuestionModel,
+    questions: IQuestionModel[],
+    // answers: IAnswerModel[],
+    createContent: string, // [ICreateQuestionTypeComponentProps.content] settings of the component
+    content: string, // save answer in [content]
+    onSubmit: (content: string, nextQuestionIndex?: number) => void,
+}
 
 export interface IDynamicQuestionTypeComponentProps {
     questionTypeId: number,
     formType: 'create' | 'show',
+    componentProps: ICreateQuestionTypeComponentProps | IShowQuestionTypeComponentProps,
 }
 
 export interface IDynamicQuestionTypeComponentState {
@@ -15,7 +34,7 @@ export interface IDynamicQuestionTypeComponentState {
 
 export class DynamicQuestionTypeComponent
     extends HasFetchComponent<IDynamicQuestionTypeComponentProps, IDynamicQuestionTypeComponentState> {
-    
+
     constructor(props: IDynamicQuestionTypeComponentProps) {
         super(props);
 
@@ -42,6 +61,7 @@ export class DynamicQuestionTypeComponent
     render() {
 
         let Component = this.state.component;
+        let componentProps = this.props.componentProps;
 
         return (
             <div>
@@ -51,7 +71,9 @@ export class DynamicQuestionTypeComponent
                 />}
 
                 {Component &&
-                    <Component />
+                    <Component
+                        {...componentProps}
+                    />
                 }
             </div>
         );

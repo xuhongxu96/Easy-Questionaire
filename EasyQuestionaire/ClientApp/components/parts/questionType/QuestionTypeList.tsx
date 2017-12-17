@@ -84,7 +84,7 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
                 onRender: (item: IQuestionTypeModel) => {
                     return (
                         <span>
-                            {new Date(item.updatedAt).toLocaleString()}
+                            {item.updatedAt.toLocaleString()}
                         </span>
                     );
                 },
@@ -105,7 +105,7 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
                 onRender: (item: IQuestionTypeModel) => {
                     return (
                         <span>
-                            {new Date(item.createdAt).toLocaleString()}
+                            {item.createdAt.toLocaleString()}
                         </span>
                     );
                 },
