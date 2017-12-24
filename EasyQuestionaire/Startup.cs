@@ -27,10 +27,10 @@ namespace EasyQuestionaire
         public void ConfigureServices(IServiceCollection services)
         {
             // Add DbContext for Application Identity and Questionaire
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            // var connectionString = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<QuestionaireContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlite("Data Source=EasyQuestionaire.db"));
 
             // Configure Cookie
             services.ConfigureApplicationCookie(options =>

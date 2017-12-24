@@ -73,7 +73,14 @@ export class QuestionaireList extends HasFetchComponent<IQuestionaireListProps, 
                 isSortedDescending: false,
                 onColumnClick: this._onColumnClick,
                 data: 'string',
-                isPadded: true
+                isPadded: true,
+                onRender: (item: IQuestionaireModel) => {
+                    return (
+                        <a target='_blank' href={'/questionaire/fill/' + item.id}>
+                            {item.title}
+                        </a>
+                    );
+                },
             },
             {
                 key: 'description',

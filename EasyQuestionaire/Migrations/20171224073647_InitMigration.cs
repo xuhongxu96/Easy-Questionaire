@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 
 namespace EasyQuestionaire.Migrations
 {
-    public partial class Init : Migration
+    public partial class InitMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,16 +12,16 @@ namespace EasyQuestionaire.Migrations
                 name: "Questionaire",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "getdate()"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OwnerIP = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CreatedAt = table.Column<DateTimeOffset>(nullable: false, defaultValueSql: "getdate()"),
+                    Description = table.Column<string>(nullable: false),
+                    EndDate = table.Column<DateTime>(nullable: false),
+                    Guid = table.Column<Guid>(nullable: false),
+                    OwnerIP = table.Column<string>(nullable: true),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    Title = table.Column<string>(nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,16 +32,16 @@ namespace EasyQuestionaire.Migrations
                 name: "QuestionType",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CompiledCreateForm = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompiledShowForm = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreateFormTSX = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "getdate()"),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OwnerIP = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ShowFormTSX = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CompiledCreateForm = table.Column<string>(nullable: false),
+                    CompiledShowForm = table.Column<string>(nullable: false),
+                    CreateFormTSX = table.Column<string>(nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(nullable: false, defaultValueSql: "getdate()"),
+                    Name = table.Column<string>(nullable: false),
+                    OwnerIP = table.Column<string>(nullable: true),
+                    ShowFormTSX = table.Column<string>(nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,14 +52,14 @@ namespace EasyQuestionaire.Migrations
                 name: "Question",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "getdate()"),
-                    Order = table.Column<int>(type: "int", nullable: false),
-                    QuestionaireId = table.Column<int>(type: "int", nullable: false),
-                    TypeId = table.Column<int>(type: "int", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Content = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(nullable: false, defaultValueSql: "getdate()"),
+                    Order = table.Column<int>(nullable: false),
+                    QuestionaireId = table.Column<int>(nullable: false),
+                    TypeId = table.Column<int>(nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -83,15 +82,15 @@ namespace EasyQuestionaire.Migrations
                 name: "Answer",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValueSql: "getdate()"),
-                    OwnerIP = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    QuestionId = table.Column<int>(type: "int", nullable: false),
-                    SessionId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TimeSpent = table.Column<int>(type: "int", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Content = table.Column<string>(nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(nullable: false, defaultValueSql: "getdate()"),
+                    OwnerIP = table.Column<string>(nullable: true),
+                    QuestionId = table.Column<int>(nullable: false),
+                    SessionId = table.Column<string>(nullable: true),
+                    TimeSpent = table.Column<int>(nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(nullable: false)
                 },
                 constraints: table =>
                 {

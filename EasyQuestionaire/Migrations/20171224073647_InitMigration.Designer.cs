@@ -11,15 +11,14 @@ using System;
 namespace EasyQuestionaire.Migrations
 {
     [DbContext(typeof(QuestionaireContext))]
-    [Migration("20171224055534_Init")]
-    partial class Init
+    [Migration("20171224073647_InitMigration")]
+    partial class InitMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
 
             modelBuilder.Entity("EasyQuestionaire.Models.Answer", b =>
                 {
