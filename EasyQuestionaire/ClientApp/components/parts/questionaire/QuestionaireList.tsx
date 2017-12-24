@@ -247,8 +247,9 @@ export class QuestionaireList extends HasFetchComponent<IQuestionaireListProps, 
         newItems = this._sortItems(newItems, currColumn.fieldName, currColumn.isSortedDescending);
         this.setState({
             columns: newColumns,
-            items: newItems
+            items: newItems,
         });
+        this._selection.setAllSelected(false);
     }
 
     private _sortItems(items: IQuestionaireModel[], sortBy: string, descending = false): IQuestionaireModel[] {

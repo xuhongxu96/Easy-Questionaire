@@ -13,8 +13,9 @@ namespace EasyQuestionaire.Models
         [Required]
         public string Content { get; set; }
         public string OwnerIP { get; set; }
+        public string SessionId { get; set; }
         [Required]
-        public DateTimeOffset TimeSpent { get; set; }
+        public int TimeSpent { get; set; } // By Second
 
         [Required]
         public int QuestionId { get; set; }

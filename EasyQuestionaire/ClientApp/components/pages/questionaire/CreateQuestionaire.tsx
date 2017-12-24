@@ -10,6 +10,7 @@ export class CreateQuestionaire extends React.Component<RouteComponentProps<{}>,
         return (<div className='xhx-Page xhx-CreateQuestionaire'>
             <ThreeLevelBreadcrumb title='Questionaire' subtitle='Create New' history={this.props.history} url='/questionaire' />
             <QuestionaireForm
+                type='create'
                 onSubmitted={(questionaire) => {
                     this.props.history.push(`/questionaire/edit/questions/${questionaire.id}/${questionaire.guid}`);
                 }}

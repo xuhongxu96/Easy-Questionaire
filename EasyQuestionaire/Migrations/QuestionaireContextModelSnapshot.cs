@@ -36,7 +36,9 @@ namespace EasyQuestionaire.Migrations
 
                     b.Property<int>("QuestionId");
 
-                    b.Property<DateTimeOffset>("TimeSpent");
+                    b.Property<string>("SessionId");
+
+                    b.Property<int>("TimeSpent");
 
                     b.Property<DateTimeOffset>("UpdatedAt");
 

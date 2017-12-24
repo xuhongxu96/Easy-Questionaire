@@ -244,6 +244,17 @@ declare interface IQuestionModel {
     createdAt: Date,
     updatedAt: Date,
 }
+declare interface IAnswerModel {
+    [key: string]: any,
+    id: number,
+    content: string,
+    sessionId: string,
+    timeSpent: number,
+    questionId: number,
+    ownerIP: string,
+    createdAt: Date,
+    updatedAt: Date,
+}
 declare interface ICreateQuestionTypeComponentProps {
     question: IQuestionModel,
     questions: IQuestionModel[],
@@ -253,7 +264,7 @@ declare interface ICreateQuestionTypeComponentProps {
 declare interface IShowQuestionTypeComponentProps {
     question: IQuestionModel,
     questions: IQuestionModel[],
-    // answers: IAnswerModel[],
+    answers: IAnswerModel[],
     createContent: string, // [ICreateQuestionTypeComponentProps.content] settings of the component
     content: string, // save answer in [content]
     onSubmit: (content: string, nextQuestionIndex?: number) => void,

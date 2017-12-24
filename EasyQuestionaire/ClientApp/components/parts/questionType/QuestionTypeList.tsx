@@ -165,6 +165,7 @@ export class QuestionTypeList extends HasFetchComponent<IQuestionTypeListProps, 
             columns: newColumns,
             items: newItems
         });
+        this._selection.setAllSelected(false);
     }
 
     private _sortItems(items: IQuestionTypeModel[], sortBy: string, descending = false): IQuestionTypeModel[] {

@@ -11,8 +11,8 @@ using System;
 namespace EasyQuestionaire.Migrations
 {
     [DbContext(typeof(QuestionaireContext))]
-    [Migration("20171203065142_InitMigration")]
-    partial class InitMigration
+    [Migration("20171224055534_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,7 +37,9 @@ namespace EasyQuestionaire.Migrations
 
                     b.Property<int>("QuestionId");
 
-                    b.Property<DateTimeOffset>("TimeSpent");
+                    b.Property<string>("SessionId");
+
+                    b.Property<int>("TimeSpent");
 
                     b.Property<DateTimeOffset>("UpdatedAt");
 

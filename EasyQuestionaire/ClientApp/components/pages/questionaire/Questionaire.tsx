@@ -105,7 +105,7 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
                 }
             })
             .catch(error => this.setState({
-                inputGuidDialogErrorText: error,
+                inputGuidDialogErrorText: error.message,
             }));
 
 
@@ -133,7 +133,7 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
                 icon: 'IssueTracking',
                 className: 'ms-CommandBarItem',
                 disabled: selectedModel == null,
-                onClick: () => this.props.history.push('questionaire/fill/' + (selectedModel ? selectedModel.id : '')),
+                onClick: () => window.open('questionaire/fill/' + (selectedModel ? selectedModel.id : '')),
             },
             {
                 key: 'edit',

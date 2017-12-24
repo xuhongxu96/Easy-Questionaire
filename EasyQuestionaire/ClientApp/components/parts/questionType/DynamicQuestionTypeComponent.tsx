@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { HasFetchComponent } from '../../parts/HasFetchComponent';
 import { InfoBar } from '../../parts/InfoBar';
 import { IQuestionModel } from '../../../models/IQuestionModel';
-// import { IAnswerModel } from '../../../models/IAnswerModel';
+import { IAnswerModel } from '../../../models/IAnswerModel';
 import { IQuestionTypeModel } from '../../../models/IQuestionTypeModel';
 
 export interface ICreateQuestionTypeComponentProps {
@@ -16,7 +16,7 @@ export interface ICreateQuestionTypeComponentProps {
 export interface IShowQuestionTypeComponentProps {
     question: IQuestionModel,
     questions: IQuestionModel[],
-    // answers: IAnswerModel[],
+    answers: IAnswerModel[],
     createContent: string, // [ICreateQuestionTypeComponentProps.content] settings of the component
     content: string, // save answer in [content]
     onSubmit: (content: string, nextQuestionIndex?: number) => void,

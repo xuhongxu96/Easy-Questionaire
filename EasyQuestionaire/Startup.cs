@@ -41,11 +41,13 @@ namespace EasyQuestionaire
                 options.SlidingExpiration = true;
             });
 
+            services.AddDistributedMemoryCache();
             // Configure Session
             services.AddSession(options =>
             {
                 options.Cookie.Name = ".EasyQuestionaire.Session";
                 options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.Cookie.HttpOnly = true;
             });
 
             // Add Compression
@@ -78,6 +80,7 @@ namespace EasyQuestionaire
             }
 
             app.UseStaticFiles();
+            app.UseSession();
             app.UseResponseCompression();
 
             app.UseMvc(routes =>
