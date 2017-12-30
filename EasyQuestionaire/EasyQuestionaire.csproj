@@ -27,6 +27,7 @@
     <None Remove="ClientApp\components\parts\questionType\DynamicQuestionTypeComponent.tsx" />
     <None Remove="ClientApp\components\parts\questionType\SelectQuestionTypeDialog.tsx" />
     <None Remove="ClientApp\components\parts\StatusBar.tsx" />
+    <None Remove="ClientApp\exampleQuestionTypes\FillingBlank_Show.tsx" />
     <None Remove="ClientApp\models\IAnswerModel.tsx" />
     <None Remove="ClientApp\models\IQuestionModel.ts" />
     <None Remove="ClientApp\models\IQuestionTypeModel.ts" />
@@ -68,6 +69,8 @@
     <TypeScriptCompile Include="ClientApp\components\parts\StatusBar.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\ThreeLevelBreadcrumb.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionType\QuestionTypeList.tsx" />
+    <TypeScriptCompile Include="ClientApp\exampleQuestionTypes\FillingBlank_Create.tsx" />
+    <TypeScriptCompile Include="ClientApp\exampleQuestionTypes\FillingBlank_Show.tsx" />
     <TypeScriptCompile Include="ClientApp\models\IAnswerModel.tsx" />
     <TypeScriptCompile Include="ClientApp\models\IQuestionaireModel.ts" />
     <TypeScriptCompile Include="ClientApp\components\pages\questionType\QuestionType.tsx" />
