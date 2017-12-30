@@ -60,6 +60,8 @@ interface IShowQuestionTypeComponentProps {
 
 ## Roadmap
 
+All Done.
+
 - [x] Question Type List
 - [x] Question Type Component Editor (Using monaco-editor)
 - [x] Question Type Creating and Editing Form
@@ -72,4 +74,11 @@ interface IShowQuestionTypeComponentProps {
 	- [x] Save questions
 - [x] Questionaire Editing Form
 - [x] Questionaire Filling Form
-- [ ] Questionaire Report
+- [x] Questionaire Report
+
+### Question Type Enrichment
+
+- [x] Filling-Blank Question
+- [ ] Ordering Question
+- [ ] Scoring Question
+
