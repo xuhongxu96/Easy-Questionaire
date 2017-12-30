@@ -113,6 +113,39 @@ namespace EasyQuestionaire.Controllers
             return Ok(questionaire.Questions);
         }
 
+        // GET: api/Questionaire/answers/5/1/xxx-xxx
+        [HttpGet("answers/{id}/{questionId}/{guid}")]
+        public async Task<IActionResult> GetQuestionaireAnswers([FromRoute] int id, [FromRoute] int questionId, [FromRoute] Guid guid)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { guid = "Not a Valid Guid." });
+            }
+
+            var questionaire = await _context.Questionaire.SingleOrDefaultAsync(m => m.Id == id);
+
+            if (questionaire == null)
+            {
+                return NotFound();
+            }
+
+            if (questionaire.Guid != guid)
+            {
+                return BadRequest(new { guid = "Wrong Guid." });
+            }
+
+            var question = await _context.Question.SingleOrDefaultAsync(m => m.Id == questionId && m.QuestionaireId == id);
+
+            if (question == null)
+            {
+                return NotFound();
+            }
+
+            await _context.Entry(question).Collection(q => q.Answers).LoadAsync();
+
+            return Ok(question.Answers);
+        }
+
         // PUT: api/Questionaire/5/xxx-xxx
         [HttpPut("{id}/{guid}")]
         public async Task<IActionResult> PutQuestionaire([FromRoute] int id, [FromRoute] Guid guid, [FromBody] Questionaire questionaire)

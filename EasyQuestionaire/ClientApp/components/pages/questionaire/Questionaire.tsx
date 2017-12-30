@@ -16,6 +16,7 @@ export interface IQuestionaireState {
     selectedModel: IQuestionaireModel | null,
     isInputGuidDialogHidden: boolean,
     inputGuidDialogErrorText: string,
+    dialogType: 'edit' | 'report',
 }
 
 export class Questionaire extends React.Component<RouteComponentProps<{}>, IQuestionaireState> {
@@ -33,6 +34,7 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
         this._onSelected = this._onSelected.bind(this);
         this._onToggleSelect = this._onToggleSelect.bind(this);
         this._prepareEditQuestionaire = this._prepareEditQuestionaire.bind(this);
+        this._prepareViewQuestionaireReport = this._prepareViewQuestionaireReport.bind(this);
         this._onFinishedInputGuid = this._onFinishedInputGuid.bind(this);
 
         this.state = {
@@ -41,6 +43,7 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
             selectedModel: null,
             isInputGuidDialogHidden: true,
             inputGuidDialogErrorText: '',
+            dialogType: 'edit',
         }
     }
 
@@ -81,10 +84,19 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
         this.setState({
             isInputGuidDialogHidden: false,
             inputGuidDialogErrorText: '',
+            dialogType: 'edit',
         });
     }
 
-    private _onFinishedInputGuid(guid: string) {
+    private _prepareViewQuestionaireReport() {
+        this.setState({
+            isInputGuidDialogHidden: false,
+            inputGuidDialogErrorText: '',
+            dialogType: 'report',
+        });
+    }
+
+    private _onFinishedInputGuid(type: 'edit' | 'report', guid: string) {
 
         const selectedModel = this.state.selectedModel;
 
@@ -101,7 +113,7 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
                         inputGuidDialogErrorText: '',
                     });
 
-                    this.props.history.push(`questionaire/edit/${selectedModel ? selectedModel.id : ''}/${guid}`);
+                    this.props.history.push(`questionaire/${type}/${selectedModel ? selectedModel.id : ''}/${guid}`);
                 }
             })
             .catch(error => this.setState({
@@ -118,6 +130,7 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
         const selectedModel = this.state.selectedModel;
         const isDialogHidden = this.state.isInputGuidDialogHidden;
         const dialogErrorText = this.state.inputGuidDialogErrorText;
+        const dialogType = this.state.dialogType;
 
         const commands: IContextualMenuItem[] = [
             {
@@ -143,6 +156,14 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
                 disabled: selectedModel == null,
                 onClick: this._prepareEditQuestionaire,
             },
+            {
+                key: 'report',
+                name: 'Report',
+                icon: 'CRMReport',
+                className: 'ms-CommandBarItem',
+                disabled: selectedModel == null,
+                onClick: this._prepareViewQuestionaireReport,
+            }
         ];
 
         const farCommands: IContextualMenuItem[] = [
@@ -185,7 +206,7 @@ export class Questionaire extends React.Component<RouteComponentProps<{}>, IQues
             <InputGuidDialog
                 hidden={isDialogHidden}
                 onDismiss={() => this.setState({ isInputGuidDialogHidden: true })}
-                onConfirm={this._onFinishedInputGuid}
+                onConfirm={this._onFinishedInputGuid.bind(null, dialogType)}
                 errorText={dialogErrorText}
             />
 

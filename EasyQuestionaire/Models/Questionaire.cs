@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -36,9 +37,11 @@ namespace EasyQuestionaire.Models
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
 
+        [JsonIgnore]
         public ICollection<Question> Questions { get; set; } = new List<Question>();
 
         [NotMapped]
+        [JsonIgnore]
         public object SafeContent
         {
             get

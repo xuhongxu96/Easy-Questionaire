@@ -5,6 +5,8 @@ import { ThreeLevelBreadcrumb } from '../../parts/ThreeLevelBreadcrumb';
 import { QuestionaireForm } from '../../parts/questionaire/QuestionaireForm';
 import { IQuestionaireModel } from '../../../models/IQuestionaireModel';
 import { HasFetchComponent } from '../../parts/HasFetchComponent';
+import { ErrorBar } from '../../parts/ErrorBar';
+import { InfoBar } from '../../parts/InfoBar';
 
 export interface IEditQuestionaireState {
     model: IQuestionaireModel | null,
@@ -33,7 +35,7 @@ export class EditQuestionaire extends HasFetchComponent<RouteComponentProps<{ id
                 model: data,
                 isLoading: false
             }))
-            .catch(error => this.setStateWhenMount({ errorText: error, isLoading: false }));
+            .catch(error => this.setStateWhenMount({ errorText: error.message, isLoading: false }));
     }
 
     componentDidMount() {
@@ -56,6 +58,15 @@ export class EditQuestionaire extends HasFetchComponent<RouteComponentProps<{ id
                 subsubtitle={modelName}
                 history={this.props.history}
                 url='/questionaire'
+            />
+
+            <ErrorBar
+                errorText={errorText}
+                onDismiss={() => this.setState({ errorText: '' })}
+            />
+
+            <InfoBar
+                infoText={isLoading ? 'Loading...' : ''}
             />
 
             {model && <QuestionaireForm

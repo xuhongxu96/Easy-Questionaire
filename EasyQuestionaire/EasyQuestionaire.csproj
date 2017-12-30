@@ -22,6 +22,7 @@
     <None Remove="ClientApp\components\parts\questionaire\InputGuidDialog.tsx" />
     <None Remove="ClientApp\components\parts\questionaire\QuestionaireAnswerForm.tsx" />
     <None Remove="ClientApp\components\parts\questionaire\QuestionaireForm.tsx" />
+    <None Remove="ClientApp\components\parts\questionaire\QuestionaireReport.tsx" />
     <None Remove="ClientApp\components\parts\questionaire\QuestionEditor.tsx" />
     <None Remove="ClientApp\components\parts\questionType\DynamicQuestionTypeComponent.tsx" />
     <None Remove="ClientApp\components\parts\questionType\SelectQuestionTypeDialog.tsx" />
@@ -58,6 +59,7 @@
     <TypeScriptCompile Include="ClientApp\components\parts\questionaire\InputGuidDialog.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionaire\QuestionaireAnswerForm.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionaire\QuestionaireForm.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\pages\questionaire\QuestionaireReport.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionaire\QuestionEditor.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionaire\QuestionItem.tsx" />
     <TypeScriptCompile Include="ClientApp\components\parts\questionType\DynamicQuestionTypeComponent.tsx" />

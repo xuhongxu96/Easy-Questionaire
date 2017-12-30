@@ -26,6 +26,9 @@ namespace EasyQuestionaire.Models
         public int Order { get; set; }
         public string Content { get; set; }
 
+        [JsonIgnore]
+        public ICollection<Answer> Answers { get; set; } = new List<Answer>();
+
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
     }
